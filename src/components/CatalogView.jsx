@@ -695,7 +695,7 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
             <p>Partner terpercaya penyedia kemasan makanan dan minuman higienis, berkualitas tinggi, serta harga grosir bersahabat.</p>
             <div className="footer-contacts">
               <span>WA: +62 823-8444-2202</span>
-              <span>Alamat: Toko Alisan Plastik, Indonesia</span>
+              <span>Alamat: Jln. Moh. Yamin No 45, Pekanbaru, Riau</span>
             </div>
           </div>
           <div className="footer-col-links">

@@ -716,6 +716,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                           onChange={handleMainFileChange}
                           style={{ display: 'none' }}
                         />
+                        
                         <label htmlFor="neat-file-input-main" className="dropzone-label">
                           <div className="dropzone-icon-circle">📸</div>
                           <span className="dropzone-text-primary">Klik untuk Pilih FOTO UTAMA</span>
