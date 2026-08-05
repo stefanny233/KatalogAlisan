@@ -1,9 +1,4 @@
 {
-  "categories": [
-    "Thinwall",
-    "Paper Bowl",
-    "Gelas Plastik"
-  ],
   "products": [
     {
       "id": 1,
@@ -123,5 +118,10 @@
         }
       ]
     }
+  ],
+  "categories": [
+    "Thinwall",
+    "Paper Bowl",
+    "Gelas Plastik"
   ]
 }
