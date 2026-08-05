@@ -4,76 +4,11 @@ import CatalogView from './components/CatalogView';
 import AdminView from './components/AdminView';
 import PasscodeModal from './components/PasscodeModal';
 
-// Kategori Bawaan Awal
-const DEFAULT_CATEGORIES = ['Thinwall', 'Paper Bowl', 'Gelas Plastik'];
+import dbData from '../db.json';
 
-// Data produk bawaan awal terstruktur dengan sub-kategori dan banyak varian ukuran + harga
-const DEFAULT_PRODUCTS = [
-  {
-    id: 1,
-    name: 'Gelas Plastik Oval PP',
-    category: 'Gelas Plastik',
-    subCategory: 'PP Starindo',
-    labelBadge: 'Terlaris',
-    minOrder: '1 Pak (50 pcs)',
-    description: 'Gelas plastik PP tebal model oval yang estetik. Sangat cocok untuk kopi susu, boba, dan jus.',
-    imageUrl: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=500&auto=format&fit=crop&q=60',
-    variants: [
-      { size: '12oz', price: 850, inStock: true },
-      { size: '14oz', price: 900, inStock: true },
-      { size: '16oz', price: 950, inStock: true },
-      { size: '22oz', price: 1200, inStock: false }
-    ]
-  },
-  {
-    id: 2,
-    name: 'Gelas Plastik Datar PET Premium',
-    category: 'Gelas Plastik',
-    subCategory: 'PET Premium',
-    labelBadge: 'Rekomendasi',
-    minOrder: '1 Pak (50 pcs)',
-    description: 'Gelas plastik PET bening super jernih, kaku, dan terlihat mewah. Biasa digunakan oleh cafe-cafe besar.',
-    imageUrl: 'https://images.unsplash.com/photo-1517256064527-09c53b2d0bc6?w=500&auto=format&fit=crop&q=60',
-    variants: [
-      { size: '12oz', price: 1100, inStock: true },
-      { size: '16oz', price: 1300, inStock: true },
-      { size: '22oz', price: 1600, inStock: true }
-    ]
-  },
-  {
-    id: 3,
-    name: 'Thinwall Rectangular (Persegi Panjang)',
-    category: 'Thinwall',
-    subCategory: 'Tutup Rapat',
-    labelBadge: 'Promo',
-    minOrder: '1 Dus (500 pcs)',
-    description: 'Kotak makan plastik persegi panjang. Tahan microwave, aman untuk freezer, dan kedap udara.',
-    imageUrl: 'https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&auto=format&fit=crop&q=60',
-    variants: [
-      { size: '500ml', price: 1400, inStock: true },
-      { size: '650ml', price: 1500, inStock: true },
-      { size: '750ml', price: 1650, inStock: true },
-      { size: '1000ml', price: 2000, inStock: false }
-    ]
-  },
-  {
-    id: 4,
-    name: 'Paper Bowl Polos + Tutup',
-    category: 'Paper Bowl',
-    subCategory: 'Polos Putih',
-    labelBadge: 'Baru',
-    minOrder: '1 Pak (25 pcs)',
-    description: 'Mangkok kertas tebal dengan lapisan laminasi anti bocor, tahan panas untuk makanan berkuah.',
-    imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=500&auto=format&fit=crop&q=60',
-    variants: [
-      { size: '500ml', price: 1500, inStock: true },
-      { size: '650ml', price: 1700, inStock: true },
-      { size: '800ml', price: 1900, inStock: true }
-    ]
-  }
-];
-
-const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3001';
+// Ambil Kategori dan Produk Bawaan Awal secara langsung dari db.json
+const DEFAULT_CATEGORIES = dbData.categories || ['Thinwall', 'Paper Bowl', 'Gelas Plastik'];
+const DEFAULT_PRODUCTS = dbData.products || [];
 
 function App() {
   // State untuk data produk (mengambil dari localStorage atau default jika kosong)
@@ -87,9 +22,6 @@ function App() {
     const saved = localStorage.getItem('alisan_categories');
     return saved ? JSON.parse(saved) : DEFAULT_CATEGORIES;
   });
-
-  // Flag untuk mendeteksi apakah data awal sudah berhasil di-sync dari server
-  const [isLoadedFromServer, setIsLoadedFromServer] = useState(false);
 
   // Tampilan halaman aktif ('catalog' atau 'admin')
   const [currentView, setCurrentView] = useState('catalog');
@@ -108,76 +40,23 @@ function App() {
   // State untuk mengontrol buka/tutup Modal PIN
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
-  // 1. Load data awal dari server database (jika server aktif)
-  useEffect(() => {
-    const loadServerData = async () => {
-      try {
-        const response = await fetch(`${API_BASE}/api/data`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.products && Array.isArray(data.products)) {
-            setProducts(data.products);
-          }
-          if (data.categories && Array.isArray(data.categories)) {
-            setCategories(data.categories);
-          }
-          console.log('Database Alisan berhasil disinkronkan dari server database.');
-        }
-      } catch (err) {
-        console.log('Server database tidak terdeteksi. Menggunakan database browser (localStorage).', err);
-      } finally {
-        setIsLoadedFromServer(true);
-      }
-    };
-    loadServerData();
-  }, []);
-
-  // 2. Simpan data produk & kategori ke server & localStorage setiap kali berubah
+  // Sync data produk ke localStorage dengan proteksi quota
   useEffect(() => {
     try {
       localStorage.setItem('alisan_products', JSON.stringify(products));
     } catch (err) {
       console.warn('localStorage limit reached. Products stored in active memory.', err);
     }
+  }, [products]);
 
-    if (isLoadedFromServer) {
-      const syncToServer = async () => {
-        try {
-          await fetch(`${API_BASE}/api/data`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ products, categories })
-          });
-        } catch (err) {
-          console.warn('Gagal sinkronisasi data produk ke server database.', err);
-        }
-      };
-      syncToServer();
-    }
-  }, [products, isLoadedFromServer]);
-
+  // Sync data kategori ke localStorage
   useEffect(() => {
     try {
       localStorage.setItem('alisan_categories', JSON.stringify(categories));
     } catch (err) {
       console.warn('localStorage limit reached for categories.', err);
     }
-
-    if (isLoadedFromServer) {
-      const syncToServer = async () => {
-        try {
-          await fetch(`${API_BASE}/api/data`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ products, categories })
-          });
-        } catch (err) {
-          console.warn('Gagal sinkronisasi data kategori ke server database.', err);
-        }
-      };
-      syncToServer();
-    }
-  }, [categories, isLoadedFromServer]);
+  }, [categories]);
 
   // Sync status login admin ke sessionStorage
   useEffect(() => {
