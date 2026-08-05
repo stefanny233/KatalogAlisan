@@ -4,11 +4,12 @@ import CatalogView from './components/CatalogView';
 import AdminView from './components/AdminView';
 import PasscodeModal from './components/PasscodeModal';
 
+import dbData from '../db.json';
 import { supabase } from './supabaseClient';
 
 // Ambil Kategori dan Produk Bawaan Awal secara langsung dari db.json
-const DEFAULT_CATEGORIES = dbData.categories || ['Thinwall', 'Paper Bowl', 'Gelas Plastik', 'Paper Lunch'];
-const DEFAULT_PRODUCTS = dbData.products || [];
+const DEFAULT_CATEGORIES = (dbData && dbData.categories) ? dbData.categories : ['Thinwall', 'Paper Bowl', 'Gelas Plastik', 'Paper Lunch'];
+const DEFAULT_PRODUCTS = (dbData && dbData.products) ? dbData.products : [];
 
 function App() {
   // State untuk data produk
