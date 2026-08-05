@@ -181,6 +181,36 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
   const currentMainImage = galleryList[activeImageIdx] || detailProduct?.imageUrl;
   const detailActiveVariant = detailProduct?.variants?.[detailVariantIdx] || detailProduct?.variants?.[0];
 
+  // Helper membuat URL WhatsApp dengan template chat profesional & rapi
+  const buildWhatsAppUrl = (product, variant) => {
+    if (!product || !variant) return 'https://wa.me/6282384442202';
+    
+    const pricePack = `Rp ${formatRupiah(variant.price || 0)} / pack`;
+    const priceRollStr = variant.priceRoll ? `\n• *Harga Roll*: Rp ${formatRupiah(variant.priceRoll)}` : '';
+    const priceDusStr = variant.priceDus ? `\n• *Harga Dus/Bal*: Rp ${formatRupiah(variant.priceDus)}` : '';
+
+    const text = `Halo Admin ALISAN PLASTIK! 👋
+Saya berminat untuk memesan produk dari Katalog Web berikut:
+
+📦 *DETAIL PESANAN:*
+------------------------------------
+• *Nama Produk*: ${product.name}
+• *Kategori*: ${product.category} (${product.subCategory || 'Umum'})
+• *Ukuran / Dimensi*: ${variant.size || 'Standar'}
+• *Harga*: ${pricePack}${priceRollStr}${priceDusStr}
+• *Min. Pemesanan*: ${product.minOrder || '1 Pak'}
+
+📍 *LOKASI TOKO ALISAN PLASTIK:*
+------------------------------------
+🏢 *ALISAN PLASTIK*
+📍 Alamat: Jln Moh.Yamin No 45
+📞 Telp / WA: 0823-8444-2202
+
+Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`;
+
+    return `https://wa.me/6282384442202?text=${encodeURIComponent(text)}`;
+  };
+
   // Helper pembanding URL gambar yang kokoh
   const isMatch = (url1, url2) => {
     if (!url1 || !url2) return false;
@@ -370,7 +400,7 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
 
                 {/* TOMBOL ORDER WA */}
                 <a
-                  href={`https://wa.me/6282384442202?text=Halo%20Alisan%20Plastik,%20saya%20ingin%20memesan:%0A%0A%E2%80%A2%20Produk:%20${encodeURIComponent(detailProduct.name)}%0A%E2%80%A2%20Jenis:%20${encodeURIComponent(detailProduct.subCategory)}%0A%E2%80%A2%20Ukuran:%20${encodeURIComponent(detailActiveVariant?.size || '-')}%0A%E2%80%A2%20Harga:%20Rp%20${formatRupiah(detailActiveVariant?.price || 0)}%20/%20pack%0A%E2%80%A2%20Min.%20Order:%20${encodeURIComponent(detailProduct.minOrder || '1 Pak')}%0A%0ATolong%20info%20stok%20dan%20ongkos%20kirim.%20Terima%20kasih!`}
+                  href={buildWhatsAppUrl(detailProduct, detailActiveVariant)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`detail-wa-btn ${detailActiveVariant && !detailActiveVariant.inStock ? 'disabled-detail-wa' : ''}`}
@@ -644,7 +674,7 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
                     )}
 
                     <a
-                      href={`https://wa.me/6282384442202?text=Halo%20Alisan%20Plastik,%20saya%20tertarik%20untuk%20memesan%20produk%20berikut:%0A%0A-%20Nama%20Produk:%20${encodeURIComponent(product.name)}%0A-%20Jenis/Bahan:%20${encodeURIComponent(product.subCategory)}%0A-%20Ukuran:%20${encodeURIComponent(activeVariant.size)}%0A-%20Harga:%20Rp%20${formatRupiah(activeVariant.price)}%20/%20pack%0A-%20Min.%20Order:%20${encodeURIComponent(product.minOrder || '1 Pak')}%0A%0AMohon%20informasi%20stok.%20Terima%20kasih.`}
+                      href={buildWhatsAppUrl(product, activeVariant)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`btn-order-wa ${!activeVariant.inStock ? 'disabled-wa' : ''}`}

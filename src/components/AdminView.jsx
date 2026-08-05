@@ -815,183 +815,218 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
               </div>
             </div>
 
-            {/* LANGKAH 3: TABEL VARIAN UKURAN, DIMENSI, FOTO VARIAN & HARGA */}
+            {/* LANGKAH 3: CARD VARIAN UKURAN, DIMENSI, FOTO VARIAN & HARGA (VERTIKAL CARD LAYOUT) */}
             <div className="form-card-step">
-              <div className="step-header" style={{ justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <div className="step-badge">3</div>
-                  <div>
-                    <h3 className="step-title">Varian Ukuran, Dimensi, Foto & Harga</h3>
-                    <p className="step-subtitle">Ketik dimensi, volume, harga, serta hubungkan foto spesifik untuk masing-masing ukuran varian di bawah ini.</p>
-                  </div>
+              <div className="step-header">
+                <div className="step-badge">3</div>
+                <div>
+                  <h3 className="step-title">Varian Ukuran, Dimensi, Foto & Harga Multi-Satuan</h3>
+                  <p className="step-subtitle">Setiap varian dikelola dalam Card terpisah. Ketik dimensi, volume, harga per satuan, foto varian, dan stok ketersediaan di bawah ini.</p>
                 </div>
-
-                <button 
-                  type="button" 
-                  className="btn-add-variant-size"
-                  onClick={addVariantRow}
-                >
-                  + Tambah Baris Varian
-                </button>
               </div>
 
               <div className="step-content">
-                <div className="neat-table-responsive-wrapper">
-                  <table className="neat-variant-table-grid">
-                    <thead>
-                      <tr>
-                        <th style={{ width: '35px' }}>#</th>
-                        <th>Panjang (cm)</th>
-                        <th>Lebar (cm)</th>
-                        <th>Tinggi (cm)</th>
-                        <th>Diameter (cm)</th>
-                        <th>Vol (ml)</th>
-                        <th>Ukuran (oz)</th>
-                        <th style={{ minWidth: '130px' }}>Pilih Foto Varian</th>
-                        <th style={{ minWidth: '120px' }}>Harga Per Pack (Rp)</th>
-                        <th style={{ width: '90px', textAlign: 'center' }}>Stok</th>
-                        <th style={{ width: '40px' }}></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {variants.map((v, index) => (
-                        <tr key={index}>
-                          <td className="row-index">{index + 1}</td>
+                <div className="variant-cards-stack">
+                  {variants.map((v, index) => (
+                    <div key={index} className="variant-card-item">
+                      
+                      {/* HEADER CARD VARIAN */}
+                      <div className="variant-card-header">
+                        <div className="card-header-left">
+                          <span className="card-badge-num">Varian #{index + 1}</span>
+                          <span className="card-preview-size-tag">
+                            🏷️ Label: <strong>{buildVariantLabel(v)}</strong>
+                          </span>
+                        </div>
 
-                          <td>
-                            <input 
-                              type="number" 
-                              step="0.1" 
-                              placeholder="P (cm)"
-                              className="table-input-neat"
-                              value={v.panjang || ''}
-                              onChange={(e) => handleVariantChange(index, 'panjang', e.target.value)}
-                            />
-                          </td>
+                        <button 
+                          type="button" 
+                          className="btn-delete-variant-card"
+                          onClick={() => removeVariantRow(index)}
+                          title="Hapus varian ini"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                          Hapus Varian
+                        </button>
+                      </div>
 
-                          <td>
-                            <input 
-                              type="number" 
-                              step="0.1" 
-                              placeholder="L (cm)"
-                              className="table-input-neat"
-                              value={v.lebar || ''}
-                              onChange={(e) => handleVariantChange(index, 'lebar', e.target.value)}
-                            />
-                          </td>
-
-                          <td>
-                            <input 
-                              type="number" 
-                              step="0.1" 
-                              placeholder="T (cm)"
-                              className="table-input-neat"
-                              value={v.tinggi || ''}
-                              onChange={(e) => handleVariantChange(index, 'tinggi', e.target.value)}
-                            />
-                          </td>
-
-                          <td>
-                            <input 
-                              type="number" 
-                              step="0.1" 
-                              placeholder="Ø (cm)"
-                              className="table-input-neat"
-                              value={v.diameter || ''}
-                              onChange={(e) => handleVariantChange(index, 'diameter', e.target.value)}
-                            />
-                          </td>
-
-                          <td>
-                            <input 
-                              type="number" 
-                              placeholder="ml"
-                              className="table-input-neat"
-                              value={v.ml || ''}
-                              onChange={(e) => handleVariantChange(index, 'ml', e.target.value)}
-                            />
-                          </td>
-
-                          <td>
-                            <input 
-                              type="text" 
-                              placeholder="oz"
-                              className="table-input-neat"
-                              value={v.oz || ''}
-                              onChange={(e) => handleVariantChange(index, 'oz', e.target.value)}
-                            />
-                          </td>
-
-                          {/* HUBUNGKAN FOTO SPESIFIK KE VARIAN INI */}
-                          <td>
-                            <select
-                              className="table-input-neat"
-                              value={v.imageUrl || ''}
-                              onChange={(e) => handleVariantChange(index, 'imageUrl', e.target.value)}
-                              style={{ fontSize: '0.8rem' }}
-                            >
-                              <option value="">(Foto Utama)</option>
-                              {allAvailableImages.map((imgUrl, imgIdx) => (
-                                <option key={imgIdx} value={imgUrl}>
-                                  Foto #{imgIdx + 1}
-                                </option>
-                              ))}
-                            </select>
-                          </td>
-
-                          {/* HARGA SATUAN */}
-                          <td>
-                            <div className="table-price-wrap">
-                              <span className="table-rp">Rp</span>
+                      {/* ISI GRID CARD VARIAN */}
+                      <div className="variant-card-body">
+                        
+                        {/* KELOMPOK 1: DIMENSI & UKURAN */}
+                        <div className="variant-group-box">
+                          <h4 className="group-box-title">📐 Kelompok Dimensi & Ukuran</h4>
+                          <div className="group-fields-grid dim-grid">
+                            <div className="v-field">
+                              <label>Panjang (cm)</label>
                               <input 
                                 type="number" 
-                                placeholder="0"
-                                className="table-input-neat padded-rp"
-                                value={v.price}
-                                onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
+                                step="0.1" 
+                                placeholder="P (cm)" 
+                                value={v.panjang || ''}
+                                onChange={(e) => handleVariantChange(index, 'panjang', e.target.value)}
                               />
                             </div>
-                          </td>
 
-                          {/* TOGGLE STOK */}
-                          <td style={{ textAlign: 'center' }}>
-                            <button
-                              type="button"
-                              className={`stock-toggle-btn-small ${v.inStock ? 'in-stock' : 'out-of-stock'}`}
-                              onClick={() => toggleVariantStock(index)}
-                            >
-                              {v.inStock ? '✓ Ada' : '✗ Habis'}
-                            </button>
-                          </td>
+                            <div className="v-field">
+                              <label>Lebar (cm)</label>
+                              <input 
+                                type="number" 
+                                step="0.1" 
+                                placeholder="L (cm)" 
+                                value={v.lebar || ''}
+                                onChange={(e) => handleVariantChange(index, 'lebar', e.target.value)}
+                              />
+                            </div>
 
-                          {/* HAPUS */}
-                          <td style={{ textAlign: 'center' }}>
-                            <button 
-                              type="button" 
-                              className="btn-remove-row-neat"
-                              onClick={() => removeVariantRow(index)}
-                              title="Hapus baris varian ini"
-                            >
-                              &times;
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                            <div className="v-field">
+                              <label>Tinggi (cm)</label>
+                              <input 
+                                type="number" 
+                                step="0.1" 
+                                placeholder="T (cm)" 
+                                value={v.tinggi || ''}
+                                onChange={(e) => handleVariantChange(index, 'tinggi', e.target.value)}
+                              />
+                            </div>
+
+                            <div className="v-field">
+                              <label>Diameter (cm)</label>
+                              <input 
+                                type="number" 
+                                step="0.1" 
+                                placeholder="Ø (cm)" 
+                                value={v.diameter || ''}
+                                onChange={(e) => handleVariantChange(index, 'diameter', e.target.value)}
+                              />
+                            </div>
+
+                            <div className="v-field">
+                              <label>Volume (ml)</label>
+                              <input 
+                                type="number" 
+                                placeholder="ml" 
+                                value={v.ml || ''}
+                                onChange={(e) => handleVariantChange(index, 'ml', e.target.value)}
+                              />
+                            </div>
+
+                            <div className="v-field">
+                              <label>Ukuran (oz)</label>
+                              <input 
+                                type="text" 
+                                placeholder="oz" 
+                                value={v.oz || ''}
+                                onChange={(e) => handleVariantChange(index, 'oz', e.target.value)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* KELOMPOK 2: HARGA MULTI-SATUAN */}
+                        <div className="variant-group-box highlight-price">
+                          <h4 className="group-box-title">💰 Kelompok Harga Multi-Satuan</h4>
+                          <div className="group-fields-grid price-grid">
+                            <div className="v-field">
+                              <label>Harga per Pack (Rp) <span className="req-star">*</span></label>
+                              <div className="price-input-wrapper">
+                                <span>Rp</span>
+                                <input 
+                                  type="number" 
+                                  placeholder="0" 
+                                  value={v.price}
+                                  onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
+                                  required
+                                />
+                              </div>
+                            </div>
+
+                            <div className="v-field">
+                              <label>Harga per Roll (Rp) <span className="opt-tag">(Opsional)</span></label>
+                              <div className="price-input-wrapper">
+                                <span>Rp</span>
+                                <input 
+                                  type="number" 
+                                  placeholder="0" 
+                                  value={v.priceRoll || ''}
+                                  onChange={(e) => handleVariantChange(index, 'priceRoll', e.target.value)}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="v-field">
+                              <label>Harga per Dus / Bal (Rp) <span className="opt-tag">(Opsional)</span></label>
+                              <div className="price-input-wrapper">
+                                <span>Rp</span>
+                                <input 
+                                  type="number" 
+                                  placeholder="0" 
+                                  value={v.priceDus || ''}
+                                  onChange={(e) => handleVariantChange(index, 'priceDus', e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* KELOMPOK 3: MEDIA & STOK */}
+                        <div className="variant-group-box">
+                          <h4 className="group-box-title">🖼️ Media & Stok Varian</h4>
+                          <div className="group-fields-grid media-grid">
+                            <div className="v-field">
+                              <label>Hubungkan Foto Spesifik Varian</label>
+                              <select
+                                className="v-select-neat"
+                                value={v.imageUrl || ''}
+                                onChange={(e) => handleVariantChange(index, 'imageUrl', e.target.value)}
+                              >
+                                <option value="">(Gunakan Foto Utama Produk)</option>
+                                {allAvailableImages.map((imgUrl, imgIdx) => (
+                                  <option key={imgIdx} value={imgUrl}>
+                                    Foto Galeri #{imgIdx + 1}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            <div className="v-field">
+                              <label>Status Ketersediaan Stok</label>
+                              <button
+                                type="button"
+                                className={`variant-stock-card-toggle ${v.inStock ? 'is-in-stock' : 'is-out-of-stock'}`}
+                                onClick={() => toggleVariantStock(index)}
+                              >
+                                {v.inStock ? '✓ Stok Tersedia (Aktif)' : '✗ Stok Habis (Kosong)'}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      {/* FOOTER CARD VARIAN - LIVE PREVIEW LABEL AUTOMATIC */}
+                      <div className="variant-card-footer">
+                        <span className="footer-label-preview">
+                          ✨ <strong>Hasil Label Otomatis:</strong> "{buildVariantLabel(v)}" {v.price ? `— Rp ${formatRupiah(v.price)} / pack` : ''}
+                          {v.priceRoll ? ` | Rp ${formatRupiah(v.priceRoll)} / roll` : ''}
+                          {v.priceDus ? ` | Rp ${formatRupiah(v.priceDus)} / dus` : ''}
+                        </span>
+                      </div>
+
+                    </div>
+                  ))}
+
+                  {/* TOMBOL + TAMBAH VARIAN BARU DI BAGIAN BAWAH CARD */}
+                  <button 
+                    type="button" 
+                    className="btn-add-variant-card-bottom"
+                    onClick={addVariantRow}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Tambah Varian Ukuran Baru
+                  </button>
+
                 </div>
-
-                <div className="variant-preview-summary-box">
-                  <span className="summary-title">Preview Label Hasil Otomatis di Katalog:</span>
-                  <div className="summary-labels-list">
-                    {variants.map((v, i) => (
-                      <span key={i} className="summary-chip-badge">
-                        Varian #{i + 1}: {buildVariantLabel(v)} {v.price ? `(Rp ${formatRupiah(v.price)})` : ''} {v.imageUrl ? '📷 [Foto Khusus]' : ''}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
               </div>
             </div>
 
