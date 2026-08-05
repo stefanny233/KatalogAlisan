@@ -6,20 +6,21 @@ import PasscodeModal from './components/PasscodeModal';
 
 import dbData from '../db.json';
 
+// Cloud Database Endpoint (JSONBlob) untuk sinkronisasi Real-Time serentak di semua HP & Laptop
+const CLOUD_DB_URL = 'https://jsonblob.com/api/jsonBlob/019fd06a-28ba-7f9f-88d8-6b4ff8feebc1';
+
 // Ambil Kategori dan Produk Bawaan Awal secara langsung dari db.json
-const DEFAULT_CATEGORIES = dbData.categories || ['Thinwall', 'Paper Bowl', 'Gelas Plastik'];
+const DEFAULT_CATEGORIES = dbData.categories || ['Thinwall', 'Paper Bowl', 'Gelas Plastik', 'Paper Lunch'];
 const DEFAULT_PRODUCTS = dbData.products || [];
 
 function App() {
-  // Versi database dari db.json
   const CURRENT_DB_VERSION = dbData.version || 1;
 
-  // State untuk data produk dengan Auto-Sync versi terbaru dari db.json di Vercel
+  // State untuk data produk (mengambil dari localStorage atau default jika belum ada)
   const [products, setProducts] = useState(() => {
     const savedVersion = localStorage.getItem('alisan_db_version');
     const saved = localStorage.getItem('alisan_products');
 
-    // Jika versi db.json dari Vercel/Git lebih baru daripada versi tersimpan di HP/browser:
     if (!savedVersion || parseInt(savedVersion, 10) < CURRENT_DB_VERSION) {
       localStorage.setItem('alisan_db_version', CURRENT_DB_VERSION.toString());
       localStorage.setItem('alisan_products', JSON.stringify(dbData.products || []));
@@ -42,6 +43,9 @@ function App() {
     return saved ? JSON.parse(saved) : (dbData.categories || []);
   });
 
+  // Flag penanda apakah data cloud pertama kali sudah dimuat
+  const [isCloudLoaded, setIsCloudLoaded] = useState(false);
+
   // Tampilan halaman aktif ('catalog' atau 'admin')
   const [currentView, setCurrentView] = useState('catalog');
 
@@ -59,21 +63,79 @@ function App() {
   // State untuk mengontrol buka/tutup Modal PIN
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
-  // Sync data produk ke localStorage dengan proteksi quota
+  // 1. Fetch data terbaru dari Cloud Database setiap kali aplikasi dibuka di HP/Laptop mana saja
+  useEffect(() => {
+    const fetchCloudData = async () => {
+      try {
+        const response = await fetch(CLOUD_DB_URL, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.products && Array.isArray(data.products)) {
+            setProducts(data.products);
+            localStorage.setItem('alisan_products', JSON.stringify(data.products));
+          }
+          if (data.categories && Array.isArray(data.categories)) {
+            setCategories(data.categories);
+            localStorage.setItem('alisan_categories', JSON.stringify(data.categories));
+          }
+          console.log('✓ Data berhasil disinkronkan secara Real-Time dari Cloud Database Alisan!');
+        }
+      } catch (err) {
+        console.warn('Mode offline / Gagal terhubung ke Cloud Database. Menggunakan data tersimpan di memori browser.', err);
+      } finally {
+        setIsCloudLoaded(true);
+      }
+    };
+    fetchCloudData();
+  }, []);
+
+  // Helper untuk push pembaruan data ke Cloud Database
+  const pushToCloud = async (newProducts, newCategories) => {
+    try {
+      await fetch(CLOUD_DB_URL, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          version: Date.now(),
+          categories: newCategories,
+          products: newProducts
+        })
+      });
+      console.log('✓ Perubahan berhasil di-update secara otomatis ke Cloud Database!');
+    } catch (err) {
+      console.warn('Gagal menyimpan ke Cloud Database:', err);
+    }
+  };
+
+  // Sync data produk ke localStorage & Cloud Database
   useEffect(() => {
     try {
       localStorage.setItem('alisan_products', JSON.stringify(products));
     } catch (err) {
-      console.warn('localStorage limit reached. Products stored in active memory.', err);
+      console.warn('localStorage limit reached.', err);
+    }
+
+    if (isCloudLoaded) {
+      pushToCloud(products, categories);
     }
   }, [products]);
 
-  // Sync data kategori ke localStorage
+  // Sync data kategori ke localStorage & Cloud Database
   useEffect(() => {
     try {
       localStorage.setItem('alisan_categories', JSON.stringify(categories));
     } catch (err) {
       console.warn('localStorage limit reached for categories.', err);
+    }
+
+    if (isCloudLoaded) {
+      pushToCloud(products, categories);
     }
   }, [categories]);
 
