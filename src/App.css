@@ -3014,10 +3014,27 @@ body {
   width: fit-content;
 }
 
+.detail-description-container {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+  margin-bottom: 1.25rem;
+}
+
+.detail-desc-header-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  margin-bottom: 0.6rem;
+}
+
 .detail-description {
   font-size: 0.88rem;
-  color: var(--text-medium);
-  line-height: 1.65;
+  color: #334155;
+  line-height: 1.7;
+  white-space: pre-line;
+  word-break: break-word;
   margin: 0;
 }
 
@@ -3650,6 +3667,64 @@ body {
   .dim-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ==================== MULTI PRICING & STORE CONTACT BOX IN DETAIL MODAL ==================== */
+.detail-multi-pricing-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed rgba(213, 181, 140, 0.4);
+}
+
+.multi-price-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  border: 1px solid rgba(213, 181, 140, 0.3);
+}
+
+.mp-unit {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.mp-val {
+  color: var(--accent-brown);
+  font-weight: 800;
+}
+
+.modal-store-contact-box {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+}
+
+.store-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: #334155;
+}
+
+.sc-icon {
+  font-size: 1rem;
+}
+
+.sc-text {
+  line-height: 1.35;
 }
 
 

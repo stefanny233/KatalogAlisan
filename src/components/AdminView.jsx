@@ -381,35 +381,14 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
           <p className="admin-main-subtitle">Kelola produk, kategori utama, foto galeri Shopee-style, varian ukuran, dan harga untuk katalog ALISAN PLASTIK.</p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <button 
-            type="button" 
-            onClick={handleExportDbJson}
-            className="btn-export-data"
-            title="Salin data ke db.json untuk update di Vercel"
-            style={{
-              padding: '0.55rem 1rem',
-              backgroundColor: 'var(--accent-brown)',
-              color: 'var(--primary-dark)',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: '800',
-              fontSize: '0.82rem',
-              cursor: 'pointer'
-            }}
-          >
-            📋 Salin Data ke db.json (Vercel)
-          </button>
-
-          <button 
-            type="button" 
-            onClick={onResetDefaults}
-            className="btn-reset-data"
-            title="Kembalikan data ke contoh awal"
-          >
-            Reset Data Contoh
-          </button>
-        </div>
+        <button 
+          type="button" 
+          onClick={onResetDefaults}
+          className="btn-reset-data"
+          title="Kembalikan data ke contoh awal"
+        >
+          Reset Data Contoh
+        </button>
       </header>
 
       {/* 2. KARTU STATISTIK ADMIN */}
@@ -702,13 +681,15 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                 </div>
 
                 <div className="form-field-group">
-                  <label className="field-label">Deskripsi Lengkap Produk</label>
+                  <label className="field-label">Deskripsi Lengkap &amp; Spesifikasi Produk</label>
                   <textarea 
-                    placeholder="Contoh: Box makanan bahan berkualitas tinggi, kedap udara, aman untuk makanan berkuah panas..."
+                    placeholder="Contoh format deskripsi rapi:&#10;&#10;• Bahan: Plastik PP Food Grade tebal &amp; bening&#10;• Fitur: Tahan panas, tidak mudah sobek, dapat dipress sealer&#10;• Cocok untuk: Kopi susu, boba, jus, dan es teh&#10;&#10;Catatan:&#10;Isi per pack 50 pcs. Pembelian grosir tersedia harga dus/bal."
                     className="field-textarea-neat"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
+                    rows={6}
                   />
+                  <span className="field-hint">Tekan Enter untuk membuat paragraf/baris baru. Format spasi &amp; poin akan tampil rapi di detail pop-up.</span>
                 </div>
               </div>
             </div>

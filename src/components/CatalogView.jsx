@@ -361,7 +361,11 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                   </div>
                 )}
 
-                <p className="detail-description">{detailProduct.description}</p>
+                {/* DESKRIPSI & SPESIFIKASI DENGAN DUKUNGAN PARAGRAF & ENTER */}
+                <div className="detail-description-container">
+                  <h4 className="detail-desc-header-title">📝 Deskripsi &amp; Spesifikasi Produk:</h4>
+                  <div className="detail-description">{detailProduct.description || 'Tidak ada deskripsi khusus.'}</div>
+                </div>
 
                 {/* PILIH UKURAN & DIMENSI */}
                 {detailProduct.variants && detailProduct.variants.length > 0 && (
@@ -384,19 +388,52 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                   </div>
                 )}
 
-                {/* HARGA FINAL PER PACK */}
+                {/* HARGA MULTI-SATUAN & SPESIFIKASI */}
                 {detailActiveVariant && (
                   <div className="detail-price-box">
                     <span className="detail-price-label">
-                      {detailActiveVariant.inStock ? 'Harga Per Pack' : '⚠ Stok Sedang Kosong'}
+                      {detailActiveVariant.inStock ? '💰 Harga Satuan Utama' : '⚠ Stok Sedang Kosong'}
                     </span>
                     <div className="detail-price-value">
                       <span className="detail-price-rp">Rp</span>
                       {formatRupiah(detailActiveVariant.price)}
                       <span className="detail-price-size"> / pack ({detailActiveVariant.size})</span>
                     </div>
+
+                    {(detailActiveVariant.priceRoll || detailActiveVariant.priceDus) && (
+                      <div className="detail-multi-pricing-row">
+                        {detailActiveVariant.priceRoll && (
+                          <div className="multi-price-badge">
+                            <span className="mp-unit">Harga Roll:</span>
+                            <span className="mp-val">Rp {formatRupiah(detailActiveVariant.priceRoll)}</span>
+                          </div>
+                        )}
+                        {detailActiveVariant.priceDus && (
+                          <div className="multi-price-badge">
+                            <span className="mp-unit">Harga Dus / Bal:</span>
+                            <span className="mp-val">Rp {formatRupiah(detailActiveVariant.priceDus)}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
+
+                {/* INFO ALAMAT & KONTAK TOKO */}
+                <div className="modal-store-contact-box">
+                  <div className="store-contact-item">
+                    <span className="sc-icon">🏢</span>
+                    <span className="sc-text"><strong>Toko Resmi:</strong> ALISAN PLASTIK</span>
+                  </div>
+                  <div className="store-contact-item">
+                    <span className="sc-icon">📍</span>
+                    <span className="sc-text"><strong>Alamat Toko:</strong> Jln Moh.Yamin No 45</span>
+                  </div>
+                  <div className="store-contact-item">
+                    <span className="sc-icon">📞</span>
+                    <span className="sc-text"><strong>Telp / WA Resmi:</strong> 0823-8444-2202</span>
+                  </div>
+                </div>
 
                 {/* TOMBOL ORDER WA */}
                 <a
@@ -653,8 +690,6 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                         <span className="price-unit-pack"> / pack</span>
                       </div>
                     </div>
-
-                    <p className="product-desc">{product.description}</p>
 
                     {product.variants?.length > 0 && (
                       <div className="variant-pills-container">
