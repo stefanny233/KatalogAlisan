@@ -11,16 +11,35 @@ const DEFAULT_CATEGORIES = dbData.categories || ['Thinwall', 'Paper Bowl', 'Gela
 const DEFAULT_PRODUCTS = dbData.products || [];
 
 function App() {
-  // State untuk data produk (mengambil dari localStorage atau default jika kosong)
+  // Versi database dari db.json
+  const CURRENT_DB_VERSION = dbData.version || 1;
+
+  // State untuk data produk dengan Auto-Sync versi terbaru dari db.json di Vercel
   const [products, setProducts] = useState(() => {
+    const savedVersion = localStorage.getItem('alisan_db_version');
     const saved = localStorage.getItem('alisan_products');
-    return saved ? JSON.parse(saved) : DEFAULT_PRODUCTS;
+
+    // Jika versi db.json dari Vercel/Git lebih baru daripada versi tersimpan di HP/browser:
+    if (!savedVersion || parseInt(savedVersion, 10) < CURRENT_DB_VERSION) {
+      localStorage.setItem('alisan_db_version', CURRENT_DB_VERSION.toString());
+      localStorage.setItem('alisan_products', JSON.stringify(dbData.products || []));
+      localStorage.setItem('alisan_categories', JSON.stringify(dbData.categories || []));
+      return dbData.products || [];
+    }
+
+    return saved ? JSON.parse(saved) : (dbData.products || []);
   });
 
   // State untuk daftar kategori dinamis
   const [categories, setCategories] = useState(() => {
+    const savedVersion = localStorage.getItem('alisan_db_version');
     const saved = localStorage.getItem('alisan_categories');
-    return saved ? JSON.parse(saved) : DEFAULT_CATEGORIES;
+
+    if (!savedVersion || parseInt(savedVersion, 10) < CURRENT_DB_VERSION) {
+      return dbData.categories || [];
+    }
+
+    return saved ? JSON.parse(saved) : (dbData.categories || []);
   });
 
   // Tampilan halaman aktif ('catalog' atau 'admin')

@@ -1,4 +1,11 @@
 {
+  "version": 2,
+  "categories": [
+    "Thinwall",
+    "Paper Bowl",
+    "Gelas Plastik",
+    "Paper Lunch"
+  ],
   "products": [
     {
       "id": 1,
@@ -117,11 +124,28 @@
           "inStock": true
         }
       ]
+    },
+    {
+      "id": 5,
+      "name": "Paper Lunch Box Craft Eco",
+      "category": "Paper Lunch",
+      "subCategory": "Laminasi Anti Minyak",
+      "labelBadge": "Rekomendasi",
+      "minOrder": "1 Pak (50 pcs)",
+      "description": "Kotak makan paper lunch box bahan cokelat kraft ramah lingkungan dengan lapisan laminasi food-grade anti bocor dan anti minyak.",
+      "imageUrl": "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&auto=format&fit=crop&q=60",
+      "variants": [
+        {
+          "size": "M (750ml)",
+          "price": 1200,
+          "inStock": true
+        },
+        {
+          "size": "L (1000ml)",
+          "price": 1400,
+          "inStock": true
+        }
+      ]
     }
-  ],
-  "categories": [
-    "Thinwall",
-    "Paper Bowl",
-    "Gelas Plastik"
   ]
 }

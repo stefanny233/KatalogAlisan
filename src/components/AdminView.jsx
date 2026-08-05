@@ -353,6 +353,24 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
     return matchesSearch && matchesCat;
   });
 
+  const handleExportDbJson = () => {
+    const exportData = {
+      version: Date.now(),
+      categories: categories,
+      products: products
+    };
+    const jsonString = JSON.stringify(exportData, null, 2);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(jsonString).then(() => {
+        alert('✓ Data katalog berhasil disalin ke Clipboard!\n\nSilakan buka file "db.json" di VS Code, paste (Ctrl+V) isi data ini, lalu git commit & push ke GitHub agar Vercel otomatis meng-update tampilannya di HP & semua perangkat!');
+      }).catch(() => {
+        prompt('Salin teks JSON berikut dan paste ke db.json di VS Code:', jsonString);
+      });
+    } else {
+      prompt('Salin teks JSON berikut dan paste ke db.json di VS Code:', jsonString);
+    }
+  };
+
   return (
     <div className="admin-page-wrapper">
       
@@ -363,14 +381,35 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
           <p className="admin-main-subtitle">Kelola produk, kategori utama, foto galeri Shopee-style, varian ukuran, dan harga untuk katalog ALISAN PLASTIK.</p>
         </div>
 
-        <button 
-          type="button" 
-          onClick={onResetDefaults}
-          className="btn-reset-data"
-          title="Kembalikan data ke contoh awal"
-        >
-          Reset Data Contoh
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <button 
+            type="button" 
+            onClick={handleExportDbJson}
+            className="btn-export-data"
+            title="Salin data ke db.json untuk update di Vercel"
+            style={{
+              padding: '0.55rem 1rem',
+              backgroundColor: 'var(--accent-brown)',
+              color: 'var(--primary-dark)',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: '800',
+              fontSize: '0.82rem',
+              cursor: 'pointer'
+            }}
+          >
+            📋 Salin Data ke db.json (Vercel)
+          </button>
+
+          <button 
+            type="button" 
+            onClick={onResetDefaults}
+            className="btn-reset-data"
+            title="Kembalikan data ke contoh awal"
+          >
+            Reset Data Contoh
+          </button>
+        </div>
       </header>
 
       {/* 2. KARTU STATISTIK ADMIN */}
