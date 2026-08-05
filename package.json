@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "start node server.js & vite",
+    "server": "node server.js",
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview"

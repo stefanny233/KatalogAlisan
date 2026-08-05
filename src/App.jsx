@@ -73,6 +73,8 @@ const DEFAULT_PRODUCTS = [
   }
 ];
 
+const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3001';
+
 function App() {
   // State untuk data produk (mengambil dari localStorage atau default jika kosong)
   const [products, setProducts] = useState(() => {
@@ -85,6 +87,9 @@ function App() {
     const saved = localStorage.getItem('alisan_categories');
     return saved ? JSON.parse(saved) : DEFAULT_CATEGORIES;
   });
+
+  // Flag untuk mendeteksi apakah data awal sudah berhasil di-sync dari server
+  const [isLoadedFromServer, setIsLoadedFromServer] = useState(false);
 
   // Tampilan halaman aktif ('catalog' atau 'admin')
   const [currentView, setCurrentView] = useState('catalog');
@@ -103,23 +108,76 @@ function App() {
   // State untuk mengontrol buka/tutup Modal PIN
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
-  // Sync data produk ke localStorage dengan proteksi quota
+  // 1. Load data awal dari server database (jika server aktif)
+  useEffect(() => {
+    const loadServerData = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/api/data`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.products && Array.isArray(data.products)) {
+            setProducts(data.products);
+          }
+          if (data.categories && Array.isArray(data.categories)) {
+            setCategories(data.categories);
+          }
+          console.log('Database Alisan berhasil disinkronkan dari server database.');
+        }
+      } catch (err) {
+        console.log('Server database tidak terdeteksi. Menggunakan database browser (localStorage).', err);
+      } finally {
+        setIsLoadedFromServer(true);
+      }
+    };
+    loadServerData();
+  }, []);
+
+  // 2. Simpan data produk & kategori ke server & localStorage setiap kali berubah
   useEffect(() => {
     try {
       localStorage.setItem('alisan_products', JSON.stringify(products));
     } catch (err) {
       console.warn('localStorage limit reached. Products stored in active memory.', err);
     }
-  }, [products]);
 
-  // Sync data kategori ke localStorage
+    if (isLoadedFromServer) {
+      const syncToServer = async () => {
+        try {
+          await fetch(`${API_BASE}/api/data`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ products, categories })
+          });
+        } catch (err) {
+          console.warn('Gagal sinkronisasi data produk ke server database.', err);
+        }
+      };
+      syncToServer();
+    }
+  }, [products, isLoadedFromServer]);
+
   useEffect(() => {
     try {
       localStorage.setItem('alisan_categories', JSON.stringify(categories));
     } catch (err) {
       console.warn('localStorage limit reached for categories.', err);
     }
-  }, [categories]);
+
+    if (isLoadedFromServer) {
+      const syncToServer = async () => {
+        try {
+          await fetch(`${API_BASE}/api/data`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ products, categories })
+          });
+        } catch (err) {
+          console.warn('Gagal sinkronisasi data kategori ke server database.', err);
+        }
+      };
+      syncToServer();
+    }
+  }, [categories, isLoadedFromServer]);
 
   // Sync status login admin ke sessionStorage
   useEffect(() => {
