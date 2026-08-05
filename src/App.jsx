@@ -4,47 +4,24 @@ import CatalogView from './components/CatalogView';
 import AdminView from './components/AdminView';
 import PasscodeModal from './components/PasscodeModal';
 
-import dbData from '../db.json';
-
-// Cloud Database Endpoint (JSONBlob) untuk sinkronisasi Real-Time serentak di semua HP & Laptop
-const CLOUD_DB_URL = 'https://jsonblob.com/api/jsonBlob/019fd06a-28ba-7f9f-88d8-6b4ff8feebc1';
+import { supabase } from './supabaseClient';
 
 // Ambil Kategori dan Produk Bawaan Awal secara langsung dari db.json
 const DEFAULT_CATEGORIES = dbData.categories || ['Thinwall', 'Paper Bowl', 'Gelas Plastik', 'Paper Lunch'];
 const DEFAULT_PRODUCTS = dbData.products || [];
 
 function App() {
-  const CURRENT_DB_VERSION = dbData.version || 1;
-
-  // State untuk data produk (mengambil dari localStorage atau default jika belum ada)
+  // State untuk data produk
   const [products, setProducts] = useState(() => {
-    const savedVersion = localStorage.getItem('alisan_db_version');
     const saved = localStorage.getItem('alisan_products');
-
-    if (!savedVersion || parseInt(savedVersion, 10) < CURRENT_DB_VERSION) {
-      localStorage.setItem('alisan_db_version', CURRENT_DB_VERSION.toString());
-      localStorage.setItem('alisan_products', JSON.stringify(dbData.products || []));
-      localStorage.setItem('alisan_categories', JSON.stringify(dbData.categories || []));
-      return dbData.products || [];
-    }
-
-    return saved ? JSON.parse(saved) : (dbData.products || []);
+    return saved ? JSON.parse(saved) : DEFAULT_PRODUCTS;
   });
 
   // State untuk daftar kategori dinamis
   const [categories, setCategories] = useState(() => {
-    const savedVersion = localStorage.getItem('alisan_db_version');
     const saved = localStorage.getItem('alisan_categories');
-
-    if (!savedVersion || parseInt(savedVersion, 10) < CURRENT_DB_VERSION) {
-      return dbData.categories || [];
-    }
-
-    return saved ? JSON.parse(saved) : (dbData.categories || []);
+    return saved ? JSON.parse(saved) : DEFAULT_CATEGORIES;
   });
-
-  // Flag penanda apakah data cloud pertama kali sudah dimuat
-  const [isCloudLoaded, setIsCloudLoaded] = useState(false);
 
   // Tampilan halaman aktif ('catalog' atau 'admin')
   const [currentView, setCurrentView] = useState('catalog');
@@ -63,79 +40,106 @@ function App() {
   // State untuk mengontrol buka/tutup Modal PIN
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
-  // 1. Fetch data terbaru dari Cloud Database setiap kali aplikasi dibuka di HP/Laptop mana saja
+  // 1. Fetch Data dari Supabase Database saat aplikasi dibuka
   useEffect(() => {
-    const fetchCloudData = async () => {
+    const loadSupabaseData = async () => {
       try {
-        const response = await fetch(CLOUD_DB_URL, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.products && Array.isArray(data.products)) {
-            setProducts(data.products);
-            localStorage.setItem('alisan_products', JSON.stringify(data.products));
-          }
-          if (data.categories && Array.isArray(data.categories)) {
-            setCategories(data.categories);
-            localStorage.setItem('alisan_categories', JSON.stringify(data.categories));
-          }
-          console.log('✓ Data berhasil disinkronkan secara Real-Time dari Cloud Database Alisan!');
+        // Fetch Categories
+        const { data: catData, error: catErr } = await supabase
+          .from('categories')
+          .select('*')
+          .order('id', { ascending: true });
+
+        if (!catErr && catData && catData.length > 0) {
+          const catList = catData.map(c => c.name);
+          setCategories(catList);
+          localStorage.setItem('alisan_categories', JSON.stringify(catList));
         }
+
+        // Fetch Products
+        const { data: prodData, error: prodErr } = await supabase
+          .from('products')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (!prodErr && prodData && prodData.length > 0) {
+          const formattedProducts = prodData.map(p => ({
+            id: p.id,
+            name: p.name,
+            category: p.category,
+            subCategory: p.sub_category || p.subCategory || 'Umum',
+            labelBadge: p.label_badge || p.labelBadge || 'Tanpa Label',
+            minOrder: p.min_order || p.minOrder || '1 Pak',
+            description: p.description || '',
+            imageUrl: p.image_url || p.imageUrl || '',
+            extraImages: p.extra_images || p.extraImages || [],
+            variants: p.variants || []
+          }));
+          setProducts(formattedProducts);
+          localStorage.setItem('alisan_products', JSON.stringify(formattedProducts));
+        }
+        console.log('✓ Database Supabase Alisan Plastik Berhasil Terhubung!');
       } catch (err) {
-        console.warn('Mode offline / Gagal terhubung ke Cloud Database. Menggunakan data tersimpan di memori browser.', err);
-      } finally {
-        setIsCloudLoaded(true);
+        console.warn('Mode offline/Gagal fetch Supabase, menggunakan data browser:', err);
       }
     };
-    fetchCloudData();
+
+    loadSupabaseData();
   }, []);
 
-  // Helper untuk push pembaruan data ke Cloud Database
-  const pushToCloud = async (newProducts, newCategories) => {
-    try {
-      await fetch(CLOUD_DB_URL, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          version: Date.now(),
-          categories: newCategories,
-          products: newProducts
-        })
-      });
-      console.log('✓ Perubahan berhasil di-update secara otomatis ke Cloud Database!');
-    } catch (err) {
-      console.warn('Gagal menyimpan ke Cloud Database:', err);
-    }
-  };
+  // 2. Real-Time Subscription Supabase (Meng-update layar secara instant jika ada perubahan dari HP/device lain)
+  useEffect(() => {
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, async () => {
+        const { data } = await supabase.from('products').select('*').order('id', { ascending: false });
+        if (data && data.length > 0) {
+          const formatted = data.map(p => ({
+            id: p.id,
+            name: p.name,
+            category: p.category,
+            subCategory: p.sub_category || p.subCategory || 'Umum',
+            labelBadge: p.label_badge || p.labelBadge || 'Tanpa Label',
+            minOrder: p.min_order || p.minOrder || '1 Pak',
+            description: p.description || '',
+            imageUrl: p.image_url || p.imageUrl || '',
+            extraImages: p.extra_images || p.extraImages || [],
+            variants: p.variants || []
+          }));
+          setProducts(formatted);
+          localStorage.setItem('alisan_products', JSON.stringify(formatted));
+        }
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, async () => {
+        const { data } = await supabase.from('categories').select('*').order('id', { ascending: true });
+        if (data && data.length > 0) {
+          const list = data.map(c => c.name);
+          setCategories(list);
+          localStorage.setItem('alisan_categories', JSON.stringify(list));
+        }
+      })
+      .subscribe();
 
-  // Sync data produk ke localStorage & Cloud Database
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Sync data produk ke localStorage
   useEffect(() => {
     try {
       localStorage.setItem('alisan_products', JSON.stringify(products));
     } catch (err) {
       console.warn('localStorage limit reached.', err);
     }
-
-    if (isCloudLoaded) {
-      pushToCloud(products, categories);
-    }
   }, [products]);
 
-  // Sync data kategori ke localStorage & Cloud Database
+  // Sync data kategori ke localStorage
   useEffect(() => {
     try {
       localStorage.setItem('alisan_categories', JSON.stringify(categories));
     } catch (err) {
       console.warn('localStorage limit reached for categories.', err);
-    }
-
-    if (isCloudLoaded) {
-      pushToCloud(products, categories);
     }
   }, [categories]);
 
@@ -145,26 +149,75 @@ function App() {
   }, [isAdmin]);
 
   // Handler tambah produk baru (dipanggil oleh AdminView)
-  const handleAddProduct = (newProd) => {
+  const handleAddProduct = async (newProd) => {
+    const tempId = Date.now();
     const productToAdd = {
-      id: Date.now(),
+      id: tempId,
       ...newProd
     };
     setProducts(prev => [productToAdd, ...prev]);
+
+    try {
+      const { data, error } = await supabase.from('products').insert([{
+        name: newProd.name,
+        category: newProd.category,
+        sub_category: newProd.subCategory || 'Umum',
+        label_badge: newProd.labelBadge || 'Tanpa Label',
+        min_order: newProd.minOrder || '1 Pak',
+        description: newProd.description || '',
+        image_url: newProd.imageUrl || '',
+        extra_images: newProd.extraImages || [],
+        variants: newProd.variants || []
+      }]).select();
+
+      if (error) {
+        console.warn('Catatan Supabase Insert:', error.message);
+      } else if (data && data[0]) {
+        const realId = data[0].id;
+        setProducts(prev => prev.map(p => p.id === tempId ? { ...p, id: realId } : p));
+      }
+    } catch (err) {
+      console.warn('Gagal menyimpan produk ke Supabase:', err);
+    }
   };
 
   // Handler edit/update produk (dipanggil oleh AdminView)
-  const handleUpdateProduct = (updatedProd) => {
+  const handleUpdateProduct = async (updatedProd) => {
     setProducts(prev => prev.map(p => p.id === updatedProd.id ? updatedProd : p));
+
+    try {
+      const { error } = await supabase.from('products').update({
+        name: updatedProd.name,
+        category: updatedProd.category,
+        sub_category: updatedProd.subCategory || 'Umum',
+        label_badge: updatedProd.labelBadge || 'Tanpa Label',
+        min_order: updatedProd.minOrder || '1 Pak',
+        description: updatedProd.description || '',
+        image_url: updatedProd.imageUrl || '',
+        extra_images: updatedProd.extraImages || [],
+        variants: updatedProd.variants || []
+      }).eq('id', updatedProd.id);
+
+      if (error) console.warn('Catatan Supabase Update:', error.message);
+    } catch (err) {
+      console.warn('Gagal update produk ke Supabase:', err);
+    }
   };
 
   // Handler hapus produk (dipanggil oleh AdminView)
-  const handleDeleteProduct = (id) => {
+  const handleDeleteProduct = async (id) => {
     setProducts(prev => prev.filter(p => p.id !== id));
+
+    try {
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) console.warn('Catatan Supabase Delete:', error.message);
+    } catch (err) {
+      console.warn('Gagal hapus produk dari Supabase:', err);
+    }
   };
 
   // Handler tambah kategori baru
-  const handleAddCategory = (newCatName) => {
+  const handleAddCategory = async (newCatName) => {
     const trimmed = newCatName.trim();
     if (!trimmed) {
       alert('Nama kategori tidak boleh kosong!');
@@ -175,11 +228,18 @@ function App() {
       return false;
     }
     setCategories(prev => [...prev, trimmed]);
+
+    try {
+      const { error } = await supabase.from('categories').insert([{ name: trimmed }]);
+      if (error) console.warn('Catatan Supabase Insert Category:', error.message);
+    } catch (err) {
+      console.warn('Gagal tambah kategori ke Supabase:', err);
+    }
     return true;
   };
 
   // Handler hapus kategori
-  const handleDeleteCategory = (catToDelete) => {
+  const handleDeleteCategory = async (catToDelete) => {
     const isUsed = products.some(p => p.category.toLowerCase() === catToDelete.toLowerCase());
     if (isUsed) {
       alert(`Tidak dapat menghapus kategori "${catToDelete}" karena masih digunakan oleh beberapa produk. Hapus atau ganti kategori produk tersebut terlebih dahulu.`);
@@ -188,6 +248,13 @@ function App() {
     setCategories(prev => prev.filter(c => c.toLowerCase() !== catToDelete.toLowerCase()));
     if (activeCategory === catToDelete) {
       setActiveCategory('Semua');
+    }
+
+    try {
+      const { error } = await supabase.from('categories').delete().eq('name', catToDelete);
+      if (error) console.warn('Catatan Supabase Delete Category:', error.message);
+    } catch (err) {
+      console.warn('Gagal hapus kategori dari Supabase:', err);
     }
     return true;
   };
