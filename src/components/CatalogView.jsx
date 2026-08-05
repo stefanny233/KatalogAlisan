@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function CatalogView({ products, categories = [], activeCategory, setActiveCategory, searchQuery }) {
   const [activeSubCategory, setActiveSubCategory] = useState('Semua Tipe');
   const [selectedVariantMap, setSelectedVariantMap] = useState({});
+
+  // Reset subkategori ketika kategori aktif berubah (mencegah bug "0 produk ditemukan")
+  useEffect(() => {
+    setActiveSubCategory('Semua Tipe');
+  }, [activeCategory]);
   
   // State untuk Quick Selector (Pilih Kemasan Anda)
   const [quickCategory, setQuickCategory] = useState('Semua');
@@ -126,11 +131,13 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
 
   // Filter produk
   const filteredProducts = products.filter(product => {
-    const matchesCategory = activeCategory === 'Semua' || product.category.toLowerCase() === activeCategory.toLowerCase();
-    const matchesSubCategory = activeSubCategory === 'Semua Tipe' || product.subCategory === activeSubCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          product.subCategory.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = activeCategory === 'Semua' || 
+      (product.category && product.category.trim().toLowerCase() === activeCategory.trim().toLowerCase());
+    const matchesSubCategory = activeSubCategory === 'Semua Tipe' || 
+      (product.subCategory && product.subCategory.trim().toLowerCase() === activeSubCategory.trim().toLowerCase());
+    const matchesSearch = (product.name && product.name.toLowerCase().includes(searchQuery.toLowerCase())) || 
+                          (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                          (product.subCategory && product.subCategory.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSubCategory && matchesSearch;
   });
 
