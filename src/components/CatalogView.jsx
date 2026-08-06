@@ -733,39 +733,6 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
 
           {/* 4. PRODUCT GRID & SUBCATEGORY FILTER */}
           <section className="catalog-products-section" id="catalog-products">
-            {/* BLOK NAVIGASI KATEGORI MOBILE SUPER MUDAH DIPAHAMI ORANG AWAM */}
-            <div className="mobile-easy-category-bar">
-              <div className="mobile-cat-pills-scroll">
-                {['Semua', ...categories].map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    className={`mobile-cat-pill-btn ${activeCategory === cat ? 'active' : ''}`}
-                    onClick={() => {
-                      setActiveCategory(cat);
-                      setActiveSubCategory('Semua Tipe');
-                    }}
-                  >
-                    {cat === 'Semua' ? 'Semua' : cat}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mobile-filter-trigger-row">
-                <button 
-                  type="button" 
-                  className="mobile-all-categories-trigger"
-                  onClick={() => setIsMobileDrawerOpen(true)}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
-                  <div className="m-text-wrap">
-                    <strong>Kategori: {activeCategory}</strong>
-                    <span>Klik untuk lihat semua kategori & filter &rarr;</span>
-                  </div>
-                </button>
-                <span className="mobile-product-count">{filteredProducts.length} Produk</span>
-              </div>
-            </div>
 
             <div className="section-title-wrap">
               <h2 className="section-title">

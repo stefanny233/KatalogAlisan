@@ -4217,11 +4217,27 @@ body {
 }
 
 @media (max-width: 990px) {
-  .app-vertical-sidebar {
-    display: none;
-  }
   .dashboard-app-layout {
     flex-direction: column;
+  }
+
+  .app-vertical-sidebar {
+    width: 100%;
+    position: relative;
+    top: 0;
+    height: auto;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1.5px solid #e2e8f0;
+    padding: 1rem 1rem 1.25rem 1rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+
+  .sidebar-menu-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
   }
 }
 
