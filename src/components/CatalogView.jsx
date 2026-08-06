@@ -53,6 +53,24 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
     document.body.style.overflow = '';
   };
 
+  // Helper: Auto-scroll halus ke area grid foto produk HANYA jika mengeklik kategori spesifik (Bukan 'Semua')
+  const scrollToProducts = (catName) => {
+    if (!catName || catName === 'Semua') return; // Biarkan di tampilan dashboard utama tanpa auto-scroll
+    setTimeout(() => {
+      const targetElem = document.getElementById('catalog-products');
+      if (targetElem) {
+        targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 60);
+  };
+
+  const handleQuickSearch = (e) => {
+    e.preventDefault();
+    setActiveCategory(quickCategory);
+    setActiveSubCategory(quickType);
+    scrollToProducts(quickCategory);
+  };
+
   // Ambil sub-kategori unik berdasarkan kategori aktif
   const getSubCategories = () => {
     const list = ['Semua Tipe'];
@@ -77,16 +95,6 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
       }
     });
     return list;
-  };
-
-  const handleQuickSearch = (e) => {
-    e.preventDefault();
-    setActiveCategory(quickCategory);
-    setActiveSubCategory(quickType);
-    const element = document.getElementById('catalog-products');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
   };
 
   // State untuk Mobile Off-Canvas Drawer Filter
@@ -583,6 +591,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                     onClick={() => {
                       setActiveCategory(cat);
                       setActiveSubCategory('Semua Tipe');
+                      scrollToProducts(cat);
                     }}
                     title={cat}
                   >
@@ -600,7 +609,10 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                           key={subCat}
                           type="button"
                           className={`sidebar-sub-link ${activeSubCategory === subCat ? 'active' : ''}`}
-                          onClick={() => setActiveSubCategory(subCat)}
+                          onClick={() => {
+                            setActiveSubCategory(subCat);
+                            scrollToProducts(activeCategory);
+                          }}
                         >
                           {subCat}
                         </button>
@@ -695,41 +707,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                 </div>
               </section>
             </>
-          ) : (
-            /* HALAMAN KHUSUS KATEGORI TERPILIH */
-            <section className="dedicated-category-page-banner">
-              <div className="category-banner-card">
-                <div className="cat-banner-crumbs">
-                  <span onClick={() => setActiveCategory('Semua')} className="crumb-clickable">Katalog Utama</span>
-                  <span className="crumb-arrow">›</span>
-                  <span className="crumb-current">{activeCategory}</span>
-                </div>
-
-                <div className="cat-banner-header-row">
-                  <div>
-                    <h1 className="cat-banner-title">Koleksi Kemasan {activeCategory}</h1>
-                    <p className="cat-banner-subtitle">
-                      Menampilkan seluruh ragam {activeCategory} dengan berbagai spesifikasi ukuran, dimensi, dan harga per pack grosir termurah.
-                    </p>
-                  </div>
-
-                  <button 
-                    type="button" 
-                    className="btn-back-all-cats"
-                    onClick={() => { setActiveCategory('Semua'); setActiveSubCategory('Semua Tipe'); }}
-                  >
-                    ← Kembali ke Semua Katalog
-                  </button>
-                </div>
-
-                <div className="cat-banner-meta-bar">
-                  <span className="cat-meta-chip">Produk: {filteredProducts.length} Item</span>
-                  <span className="cat-meta-chip">Food Grade Premium</span>
-                  <span className="cat-meta-chip">Ready Stock</span>
-                </div>
-              </div>
-            </section>
-          )}
+          ) : null}
 
           {/* 4. PRODUCT GRID & SUBCATEGORY FILTER */}
           <section className="catalog-products-section" id="catalog-products">
