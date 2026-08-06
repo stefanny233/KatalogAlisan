@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDeleteProduct, onAddCategory, onDeleteCategory, onResetDefaults }) {
+function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDeleteProduct, onAddCategory, onEditCategory, onDeleteCategory, onResetDefaults }) {
   // Tab Admin Aktif ('list' = daftar barang, 'form' = tambah/edit produk, 'category' = kelola kategori)
   const [activeAdminTab, setActiveAdminTab] = useState('list');
 
@@ -209,9 +209,12 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
 
     setVariants(product.variants && product.variants.length > 0 
       ? product.variants.map(v => ({
+          variantName: v.variantName || '',
           size: v.size || '',
           rawSize: v.size || '',
           price: v.price !== undefined ? v.price : '',
+          priceRoll: v.priceRoll || '',
+          priceDus: v.priceDus || '',
           inStock: v.inStock !== undefined ? v.inStock : true,
           panjang: v.panjang || '',
           lebar: v.lebar || '',
@@ -221,7 +224,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
           oz: v.oz || '',
           imageUrl: v.imageUrl || ''
         }))
-      : [{ size: 'Standar', price: '', inStock: true, imageUrl: '' }]
+      : [{ variantName: '', size: 'Standar', price: '', inStock: true, imageUrl: '' }]
     );
     
     setActiveAdminTab('form');
@@ -275,9 +278,14 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
       const processedVariants = variants.map(v => {
         const label = buildVariantLabel(v);
         const parsedPrice = v.price !== '' && !isNaN(v.price) ? parseFloat(v.price) : 0;
+        const parsedPriceRoll = v.priceRoll !== '' && !isNaN(v.priceRoll) ? parseFloat(v.priceRoll) : null;
+        const parsedPriceDus = v.priceDus !== '' && !isNaN(v.priceDus) ? parseFloat(v.priceDus) : null;
         return {
+          variantName: v.variantName ? v.variantName.trim() : '',
           size: label,
           price: parsedPrice,
+          priceRoll: parsedPriceRoll,
+          priceDus: parsedPriceDus,
           inStock: v.inStock,
           panjang: v.panjang,
           lebar: v.lebar,
@@ -838,6 +846,43 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                         <div className="variant-group-box">
                           <h4 className="group-box-title">📐 Kelompok Dimensi & Ukuran</h4>
                           <div className="group-fields-grid dim-grid">
+                            
+                            {/* SUB-NAMA PRODUK SPESIFIK VARIAN */}
+                            <div className="v-field full-width" style={{ gridColumn: '1 / -1', marginBottom: '0.6rem' }}>
+                              <label style={{ fontWeight: 800, color: 'var(--primary-dark)' }}>
+                                🏷️ Nama Produk
+                              </label>
+                              <input 
+                                type="text" 
+                                placeholder="Contoh: Paper Lunch Box M.." 
+                                value={v.variantName || ''}
+                                onChange={(e) => handleVariantChange(index, 'variantName', e.target.value)}
+                                className="field-input-neat"
+                                style={{ borderColor: '#e2e8f0', fontWeight: 600 }}
+                              />
+                              <small style={{ fontSize: '0.72rem', color: '#64748b', marginTop: '0.2rem', display: 'block' }}>
+                                Jika diisi, nama produk di Katalog akan menyesuaikan otomatis menjadi nama khusus ini saat varian dipilih.
+                              </small>
+                            </div>
+
+                            {/* NAMA LABEL VARIAN KUSTOM */}
+                            <div className="v-field full-width" style={{ gridColumn: '1 / -1', marginBottom: '0.4rem' }}>
+                              <label style={{ fontWeight: 800, color: 'var(--primary-dark)' }}>
+                                ✍️ Nama Label Varian 
+                              </label>
+                              <input 
+                                type="text" 
+                                placeholder="Contoh: 200 ml (Kecil), P:10×L:20×T:10 cm, Pack 50 Pcs..." 
+                                value={v.rawSize || ''}
+                                onChange={(e) => handleVariantChange(index, 'rawSize', e.target.value)}
+                                className="field-input-neat"
+                                style={{ borderColor: '#3b82f6', backgroundColor: '#eff6ff', fontWeight: 700 }}
+                              />
+                              <small style={{ fontSize: '0.72rem', color: '#64748b', marginTop: '0.2rem', display: 'block' }}>
+                                Biarkan kosong jika ingin label dibuat otomatis dari isian P × L × T / Diameter di bawah ini.
+                              </small>
+                            </div>
+
                             <div className="v-field">
                               <label>Panjang (cm)</label>
                               <input 
@@ -1029,7 +1074,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
       {activeAdminTab === 'category' && (
         <div className="admin-category-view-container">
           
-          <div className="form-card-step" style={{ maxWidth: '800px' }}>
+          <div className="form-card-step" style={{ width: '100%', maxWidth: '100%' }}>
             <div className="step-header">
               <div className="step-badge">🏷️</div>
               <div>
@@ -1072,18 +1117,33 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                           <span className="cat-card-count">{prodCount} Produk Terdaftar</span>
                         </div>
 
-                        <button 
-                          type="button" 
-                          className="btn-delete-cat"
-                          onClick={() => {
-                            if (window.confirm(`Yakin ingin menghapus kategori "${cat}"?`)) {
-                              onDeleteCategory(cat);
-                            }
-                          }}
-                          title="Hapus kategori ini"
-                        >
-                          Hapus
-                        </button>
+                        <div className="cat-card-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', minWidth: '85px' }}>
+                          <button 
+                            type="button" 
+                            className="btn-admin-edit"
+                            onClick={() => {
+                              const newName = prompt(`Edit / Perbaiki Nama Kategori "${cat}":`, cat);
+                              if (newName && newName.trim() && newName.trim() !== cat) {
+                                onEditCategory(cat, newName.trim());
+                              }
+                            }}
+                            title="Edit nama kategori ini (Perbaiki typo)"
+                          >
+                            Edit
+                          </button>
+                          <button 
+                            type="button" 
+                            className="btn-admin-delete"
+                            onClick={() => {
+                              if (window.confirm(`Yakin ingin menghapus kategori "${cat}"?`)) {
+                                onDeleteCategory(cat);
+                              }
+                            }}
+                            title="Hapus kategori ini"
+                          >
+                            Hapus
+                          </button>
+                        </div>
                       </div>
                     );
                   })}

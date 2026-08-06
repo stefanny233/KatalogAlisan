@@ -229,13 +229,14 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
     const pricePack = `Rp ${formatRupiah(variant.price || 0)} / pack`;
     const priceRollStr = variant.priceRoll ? `\n• *Harga Roll*: Rp ${formatRupiah(variant.priceRoll)}` : '';
     const priceDusStr = variant.priceDus ? `\n• *Harga Dus/Bal*: Rp ${formatRupiah(variant.priceDus)}` : '';
+    const specificProdName = variant.variantName ? `${product.name} (${variant.variantName})` : product.name;
 
     const text = `Halo Admin ALISAN PLASTIK! 👋
 Saya berminat untuk memesan produk dari Katalog Web berikut:
 
 📦 *DETAIL PESANAN:*
 ------------------------------------
-• *Nama Produk*: ${product.name}
+• *Nama Produk*: ${specificProdName}
 • *Kategori*: ${product.category} (${product.subCategory || 'Umum'})
 • *Ukuran / Dimensi*: ${variant.size || 'Standar'}
 • *Harga*: ${pricePack}${priceRollStr}${priceDusStr}
@@ -391,7 +392,14 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                   <span>{detailProduct.subCategory}</span>
                 </div>
 
-                <h2 className="detail-product-title">{detailProduct.name}</h2>
+                <h2 className="detail-product-title">
+                  {detailActiveVariant?.variantName ? detailActiveVariant.variantName : detailProduct.name}
+                </h2>
+                {detailActiveVariant?.variantName && (
+                  <span className="detail-parent-name-tag" style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600, display: 'block', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
+                    Seri Produk: <strong>{detailProduct.name}</strong>
+                  </span>
+                )}
 
                 {detailProduct.minOrder && (
                   <div className="detail-min-order">
@@ -402,34 +410,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                   </div>
                 )}
 
-                {/* DESKRIPSI & SPESIFIKASI DENGAN DUKUNGAN PARAGRAF & ENTER */}
-                <div className="detail-description-container">
-                  <h4 className="detail-desc-header-title">Deskripsi Lengkap Produk:</h4>
-                  <div className="detail-description">{detailProduct.description || 'Tidak ada deskripsi khusus.'}</div>
-                </div>
-
-                {/* PILIH UKURAN & DIMENSI */}
-                {detailProduct.variants && detailProduct.variants.length > 0 && (
-                  <div className="detail-variants-section">
-                    <h4 className="detail-variants-label">Pilihan Ukuran & Dimensi:</h4>
-                    <div className="detail-variants-grid">
-                      {detailProduct.variants.map((v, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          className={`detail-variant-btn ${detailVariantIdx === idx ? 'active' : ''} ${!v.inStock ? 'out-of-stock' : ''}`}
-                          onClick={() => handleSelectModalVariant(idx)}
-                        >
-                          <span className="dv-size">{v.size}</span>
-                          <span className="dv-price">Rp {formatRupiah(v.price)} / pack</span>
-                          {!v.inStock && <span className="dv-empty">Habis</span>}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* HARGA MULTI-SATUAN & SPESIFIKASI */}
+                {/* HARGA MULTI-SATUAN UTAMA (DIPINDAHKAN KE ATAS DESKRIPSI) */}
                 {detailActiveVariant && (
                   <div className="detail-price-box">
                     <span className="detail-price-label">
@@ -459,6 +440,46 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                     )}
                   </div>
                 )}
+
+                {/* PILIH UKURAN & DIMENSI */}
+                {detailProduct.variants && detailProduct.variants.length > 0 && (
+                  <div className="detail-variants-section">
+                    <h4 className="detail-variants-label">Pilihan Ukuran & Dimensi:</h4>
+                    <div className="detail-variants-grid">
+                      {detailProduct.variants.map((v, idx) => {
+                        const isSelected = detailVariantIdx === idx;
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            className={`detail-variant-btn ${isSelected ? 'active' : ''} ${!v.inStock ? 'out-of-stock' : ''}`}
+                            onClick={() => handleSelectModalVariant(idx)}
+                          >
+                            <div className="dv-left-info">
+                              <span className={`dv-radio-circle ${isSelected ? 'selected' : ''}`}>
+                                {isSelected ? '✓' : ''}
+                              </span>
+                              <span className="dv-size">{v.size}</span>
+                            </div>
+                            <div className="dv-right-info">
+                              {v.inStock ? (
+                                <span className="dv-price">Rp {formatRupiah(v.price)} <small>/ pack</small></span>
+                              ) : (
+                                <span className="dv-empty">Stok Habis</span>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* DESKRIPSI & SPESIFIKASI DENGAN DUKUNGAN PARAGRAF & ENTER */}
+                <div className="detail-description-container">
+                  <h4 className="detail-desc-header-title">Deskripsi Lengkap Produk:</h4>
+                  <div className="detail-description">{detailProduct.description || 'Tidak ada deskripsi khusus.'}</div>
+                </div>
 
                 {/* TOMBOL ORDER WA */}
                 <a

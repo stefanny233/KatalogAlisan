@@ -260,6 +260,41 @@ function App() {
     return true;
   };
 
+  // Handler edit/rename nama kategori
+  const handleEditCategory = async (oldCatName, newCatName) => {
+    const trimmed = newCatName.trim();
+    if (!trimmed) {
+      alert('Nama kategori tidak boleh kosong!');
+      return false;
+    }
+    if (oldCatName.toLowerCase() !== trimmed.toLowerCase() && categories.some(c => c.toLowerCase() === trimmed.toLowerCase())) {
+      alert(`Kategori "${trimmed}" sudah ada di sistem!`);
+      return false;
+    }
+
+    // Update state categories
+    setCategories(prev => prev.map(c => c === oldCatName ? trimmed : c));
+    if (activeCategory === oldCatName) {
+      setActiveCategory(trimmed);
+    }
+
+    // Update state products yang mengacu pada kategori lama
+    setProducts(prev => prev.map(p => p.category === oldCatName ? { ...p, category: trimmed } : p));
+
+    try {
+      // Update tabel categories di Supabase
+      const { error: catErr } = await supabase.from('categories').update({ name: trimmed }).eq('name', oldCatName);
+      if (catErr) console.warn('Catatan Supabase Edit Category:', catErr.message);
+
+      // Update tabel products di Supabase
+      const { error: prodErr } = await supabase.from('products').update({ category: trimmed }).eq('category', oldCatName);
+      if (prodErr) console.warn('Catatan Supabase Edit Products Category:', prodErr.message);
+    } catch (err) {
+      console.warn('Gagal edit kategori ke Supabase:', err);
+    }
+    return true;
+  };
+
   // Handler reset data ke default
   const handleResetDefaults = () => {
     if (window.confirm('Apakah Anda yakin ingin mengembalikan semua data katalog ke produk dan kategori contoh awal?')) {
@@ -388,6 +423,7 @@ function App() {
               onUpdateProduct={handleUpdateProduct}
               onDeleteProduct={handleDeleteProduct}
               onAddCategory={handleAddCategory}
+              onEditCategory={handleEditCategory}
               onDeleteCategory={handleDeleteCategory}
               onResetDefaults={handleResetDefaults}
             />
