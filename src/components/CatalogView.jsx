@@ -759,17 +759,38 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
 
           {/* 4. PRODUCT GRID & SUBCATEGORY FILTER */}
           <section className="catalog-products-section" id="catalog-products">
-            {/* BARIS TOMBOL TRIGGER FILTER MOBILE */}
-            <div className="mobile-filter-trigger-bar">
-              <button 
-                type="button" 
-                className="btn-trigger-drawer"
-                onClick={() => setIsMobileDrawerOpen(true)}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-                Filter Kategori ({activeCategory})
-              </button>
-              <span className="mobile-product-count">{filteredProducts.length} Produk</span>
+            {/* BLOK NAVIGASI KATEGORI MOBILE SUPER MUDAH DIPAHAMI ORANG AWAM */}
+            <div className="mobile-easy-category-bar">
+              <div className="mobile-cat-pills-scroll">
+                {['Semua', ...categories].map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    className={`mobile-cat-pill-btn ${activeCategory === cat ? 'active' : ''}`}
+                    onClick={() => {
+                      setActiveCategory(cat);
+                      setActiveSubCategory('Semua Tipe');
+                    }}
+                  >
+                    {cat === 'Semua' ? '🏷️ Semua' : cat}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mobile-filter-trigger-row">
+                <button 
+                  type="button" 
+                  className="mobile-all-categories-trigger"
+                  onClick={() => setIsMobileDrawerOpen(true)}
+                >
+                  <span className="m-icon">📂</span>
+                  <div className="m-text-wrap">
+                    <strong>Kategori: {activeCategory}</strong>
+                    <span>Klik untuk lihat semua kategori &amp; filter &rarr;</span>
+                  </div>
+                </button>
+                <span className="mobile-product-count">{filteredProducts.length} Produk</span>
+              </div>
             </div>
 
             <div className="section-title-wrap">

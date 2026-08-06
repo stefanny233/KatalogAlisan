@@ -4395,5 +4395,102 @@ body {
   background-color: #eff6ff;
 }
 
+/* ==================== INTUITIVE MOBILE CATEGORY PILLS BAR ==================== */
+.mobile-easy-category-bar {
+  display: none;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+@media (max-width: 990px) {
+  .mobile-easy-category-bar {
+    display: flex;
+  }
+}
+
+.mobile-cat-pills-scroll {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.mobile-cat-pills-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-cat-pill-btn {
+  flex-shrink: 0;
+  padding: 0.55rem 0.9rem;
+  border-radius: 20px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: all 0.2s ease;
+}
+
+.mobile-cat-pill-btn.active {
+  background-color: var(--primary-dark);
+  color: var(--accent-brown);
+  border-color: var(--primary-dark);
+  box-shadow: 0 2px 8px rgba(15,23,42,0.2);
+}
+
+.mobile-filter-trigger-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.mobile-all-categories-trigger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background-color: #ffffff;
+  border: 1.5px solid var(--accent-brown);
+  border-radius: 12px;
+  padding: 0.65rem 0.85rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.mobile-all-categories-trigger:hover {
+  background-color: #fefce8;
+}
+
+.m-icon {
+  font-size: 1.1rem;
+}
+
+.m-text-wrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.m-text-wrap strong {
+  font-size: 0.82rem;
+  color: var(--primary-dark);
+}
+
+.m-text-wrap span {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
 
 
