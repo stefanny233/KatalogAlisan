@@ -367,23 +367,6 @@ function App() {
             )}
           </nav>
         </div>
-
-        {/* Tab Kategori Dinamis di Bawah Header (hanya muncul di Katalog Guest) */}
-        {currentView === 'catalog' && (
-          <div className="category-navigation-bar">
-            <div className="category-nav-links">
-              {['Semua', ...categories].map((category) => (
-                <button
-                  key={category}
-                  className={`category-nav-btn ${activeCategory === category ? 'active' : ''}`}
-                  onClick={() => setActiveCategory(category)}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </header>
 
       {/* KONTEN UTAMA */}

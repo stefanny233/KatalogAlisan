@@ -936,7 +936,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                             </div>
 
                             <div className="v-field">
-                              <label>Harga per Dus / Bal (Rp) <span className="opt-tag">(Opsional)</span></label>
+                              <label>Harga per pcs (Rp) <span className="opt-tag">(Opsional)</span></label>
                               <div className="price-input-wrapper">
                                 <span>Rp</span>
                                 <input 
@@ -1026,7 +1026,6 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
       )}
 
 
-      {/* ==================== TAB 3: KELOLA KATEGORI UTAMA (DINAMIS) ==================== */}
       {activeAdminTab === 'category' && (
         <div className="admin-category-view-container">
           

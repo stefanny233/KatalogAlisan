@@ -89,30 +89,32 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
     }
   };
 
+  // State untuk Mobile Off-Canvas Drawer Filter
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+
   const renderFallbackImage = (category, name) => {
+    const catLower = (category || '').toLowerCase();
     let iconSvg = null;
-    if (category === 'Thinwall') {
+    let categoryBadgeText = category || 'Kemasan';
+    let gradientBg = 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)';
+    let iconColor = '#d5b58c';
+
+    if (catLower.includes('eco') || catLower.includes('bio') || catLower.includes('paper lunch') || catLower.includes('daun')) {
+      categoryBadgeText = '🌱 Eco-Friendly Bio';
+      gradientBg = 'linear-gradient(135deg, #064e3b 0%, #047857 100%)';
+      iconColor = '#6ee7b7';
       iconSvg = (
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="16.5" y1="9.4" x2="7.5" y2="4.21" />
-          <polygon points="12 22.08 12 12 3 6.92 3 17.08 12 22.08" />
-          <polygon points="12 22.08 21 17.08 21 6.92 12 12 12 22.08" />
-          <polygon points="12 12 21 6.92 12 1.84 3 6.92 12 12" />
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
         </svg>
       );
-    } else if (category === 'Paper Bowl') {
+    } else if (catLower.includes('gelas') || catLower.includes('cup') || catLower.includes('boba')) {
+      categoryBadgeText = '🥤 Cup & Gelas Plastik';
+      gradientBg = 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)';
+      iconColor = '#7dd3fc';
       iconSvg = (
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M2 12h20" />
-          <path d="M20 12v4a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6v-4" />
-          <path d="M12 2v6" />
-          <path d="M8 3v3" />
-          <path d="M16 3v3" />
-        </svg>
-      );
-    } else {
-      iconSvg = (
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
           <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z" />
           <line x1="6" y1="2" x2="6" y2="4" />
@@ -120,11 +122,50 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
           <line x1="14" y1="2" x2="14" y2="4" />
         </svg>
       );
+    } else if (catLower.includes('bowl') || catLower.includes('mangkuk')) {
+      categoryBadgeText = '🥣 Paper Bowl';
+      gradientBg = 'linear-gradient(135deg, #451a03 0%, #78350f 100%)';
+      iconColor = '#fde047';
+      iconSvg = (
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 12h20" />
+          <path d="M20 12v4a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6v-4" />
+          <path d="M12 2v6" />
+          <path d="M8 3v3" />
+          <path d="M16 3v3" />
+        </svg>
+      );
+    } else if (catLower.includes('thinwall') || catLower.includes('box') || catLower.includes('kotak')) {
+      categoryBadgeText = '📦 Thinwall Box';
+      gradientBg = 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)';
+      iconColor = '#a5b4fc';
+      iconSvg = (
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+          <path d="m3.3 7 8.7 5 8.7-5" />
+          <path d="M12 22V12" />
+        </svg>
+      );
+    } else {
+      categoryBadgeText = category || 'ALISAN PLASTIK';
+      gradientBg = 'linear-gradient(135deg, #0f172a 0%, #334155 100%)';
+      iconColor = '#d5b58c';
+      iconSvg = (
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M16.5 9.4 7.5 4.21" />
+          <polygon points="12 22.08 12 12 3 6.92 3 17.08 12 22.08" />
+          <polygon points="12 22.08 21 17.08 21 6.92 12 12 12 22.08" />
+          <polygon points="12 12 21 6.92 12 1.84 3 6.92 12 12" />
+        </svg>
+      );
     }
+
     return (
-      <div className="placeholder-image">
-        <div className="placeholder-icon">{iconSvg}</div>
-        <div className="placeholder-text">{name}</div>
+      <div className="placeholder-image-rich" style={{ background: gradientBg }}>
+        <span className="placeholder-cat-badge" style={{ color: iconColor }}>{categoryBadgeText}</span>
+        <div className="placeholder-icon-wrap" style={{ color: iconColor }}>{iconSvg}</div>
+        <div className="placeholder-text-title">{name}</div>
+        <span className="placeholder-sub-note">Food Grade Premium</span>
       </div>
     );
   };
@@ -363,8 +404,39 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
 
                 {/* DESKRIPSI & SPESIFIKASI DENGAN DUKUNGAN PARAGRAF & ENTER */}
                 <div className="detail-description-container">
-                  <h4 className="detail-desc-header-title">📝 Deskripsi &amp; Spesifikasi Produk:</h4>
+                  <h4 className="detail-desc-header-title">📝 Deskripsi Lengkap Produk:</h4>
                   <div className="detail-description">{detailProduct.description || 'Tidak ada deskripsi khusus.'}</div>
+                </div>
+
+                {/* GRID SPESIFIKASI UKURAN & MATERIAL */}
+                <div className="specifications-table-box">
+                  <h4 className="spec-table-title">📐 Tabel Spesifikasi Ukuran &amp; Material</h4>
+                  <div className="spec-table-grid">
+                    <div className="spec-grid-item">
+                      <span className="spec-label">🧪 Material / Bahan</span>
+                      <span className="spec-value highlight-mat">{detailProduct.subCategory || 'Food Grade Premium'}</span>
+                    </div>
+                    <div className="spec-grid-item">
+                      <span className="spec-label">📏 Ukuran Varian Aktif</span>
+                      <span className="spec-value"><strong>{detailActiveVariant?.size || 'Standar'}</strong></span>
+                    </div>
+                    <div className="spec-grid-item">
+                      <span className="spec-label">🌱 Fitur &amp; Keunggulan</span>
+                      <span className="spec-value eco-pills">
+                        <span className="eco-pill-badge">✓ Food Grade</span>
+                        <span className="eco-pill-badge">✓ Bebas BPA</span>
+                        {(detailProduct.category?.toLowerCase().includes('lunch') || detailProduct.category?.toLowerCase().includes('paper') || detailProduct.subCategory?.toLowerCase().includes('eco')) ? (
+                          <span className="eco-pill-badge bio">🌿 Eco / Bio Friendly</span>
+                        ) : (
+                          <span className="eco-pill-badge microwave">🔥 Safe for Hot/Cold</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="spec-grid-item">
+                      <span className="spec-label">📦 Min. Pemesanan (MOQ)</span>
+                      <span className="spec-value">{detailProduct.minOrder || '1 Pak'}</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* PILIH UKURAN & DIMENSI */}
@@ -461,161 +533,253 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
         </div>
       )}
 
-      {/* CONDITIONAL RENDER: 
-          JIKA activeCategory === 'Semua': TAMPILKAN HERO UTAMA
-          JIKA activeCategory !== 'Semua': TAMPILKAN HALAMAN KATEGORI KHUSUS 
-      */}
-      {activeCategory === 'Semua' ? (
-        <>
-          {/* 1. HERO SECTION UTAMA */}
-          <section className="hero-section">
-            <div className="quick-selector-card">
-              <div className="selector-header">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/>
-                </svg>
-                <h3>Pilih Kemasan Anda</h3>
-              </div>
-              <form onSubmit={handleQuickSearch} className="selector-form">
-                <div className="selector-group">
-                  <label>Kategori Utama</label>
-                  <select 
-                    value={quickCategory} 
-                    onChange={(e) => { setQuickCategory(e.target.value); setQuickType('Semua Tipe'); }}
-                    className="selector-select"
+      {/* MOBILE SLIDE-OUT OFF-CANVAS DRAWER FILTER */}
+      <div className={`mobile-drawer-overlay ${isMobileDrawerOpen ? 'open' : ''}`} onClick={() => setIsMobileDrawerOpen(false)}>
+        <div className="mobile-drawer-card" onClick={(e) => e.stopPropagation()}>
+          <div className="drawer-header">
+            <div className="drawer-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              Filter &amp; Kategori Produk
+            </div>
+            <button className="btn-close-drawer" onClick={() => setIsMobileDrawerOpen(false)}>&times;</button>
+          </div>
+
+          <div className="drawer-body">
+            <div className="drawer-section-title">Kategori Utama</div>
+            <div className="drawer-categories-list">
+              {['Semua', ...categories].map((cat) => {
+                const count = cat === 'Semua' ? products.length : products.filter(p => p.category.toLowerCase() === cat.toLowerCase()).length;
+                return (
+                  <button
+                    key={cat}
+                    className={`drawer-cat-item ${activeCategory === cat ? 'active' : ''}`}
+                    onClick={() => {
+                      setActiveCategory(cat);
+                      setActiveSubCategory('Semua Tipe');
+                      setIsMobileDrawerOpen(false);
+                    }}
                   >
-                    <option value="Semua">Semua Kategori</option>
-                    {categories.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
+                    <span>{cat}</span>
+                    <span className="cat-count-badge">{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {getSubCategories().length > 1 && (
+              <div className="drawer-subcats-group">
+                <div className="drawer-section-title">Jenis / Sub-Kategori</div>
+                <div className="drawer-subcats-pills">
+                  {getSubCategories().map((subCat) => (
+                    <button
+                      key={subCat}
+                      className={`drawer-subcat-pill ${activeSubCategory === subCat ? 'active' : ''}`}
+                      onClick={() => {
+                        setActiveSubCategory(subCat);
+                        setIsMobileDrawerOpen(false);
+                      }}
+                    >
+                      {subCat}
+                    </button>
+                  ))}
                 </div>
-                <div className="selector-group">
-                  <label>Jenis / Sub-Kategori</label>
-                  <select 
-                    value={quickType} 
-                    onChange={(e) => setQuickType(e.target.value)}
-                    className="selector-select"
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* MAIN DASHBOARD LAYOUT (SIDEBAR KIRI & VIEWPORT KANAN ALA SCREENSHOT ACUAN) */}
+      <div className="dashboard-app-layout">
+        
+        {/* SIDEBAR VERTIKAL KIRI (MINIMALIS & TANPA EMOJI) */}
+        <aside className="app-vertical-sidebar">
+          <div className="sidebar-section-label">Kategori Produk</div>
+
+          <div className="sidebar-menu-list">
+            {['Semua', ...categories].map((cat) => {
+              const count = cat === 'Semua' ? products.length : products.filter(p => p.category?.toLowerCase() === cat.toLowerCase()).length;
+              const isActive = activeCategory === cat;
+
+              return (
+                <div key={cat} className="sidebar-menu-group">
+                  <button
+                    type="button"
+                    className={`sidebar-menu-item ${isActive ? 'active' : ''}`}
+                    onClick={() => {
+                      setActiveCategory(cat);
+                      setActiveSubCategory('Semua Tipe');
+                    }}
+                    title={cat}
                   >
-                    {getAllSubCategoriesForSelector().map((t, idx) => (
-                      <option key={idx} value={t}>{t}</option>
-                    ))}
-                  </select>
+                    <div className="menu-item-left">
+                      <span className="menu-dot"></span>
+                      <span className="menu-title">{cat === 'Semua' ? 'Semua Produk' : cat}</span>
+                    </div>
+                    <span className="menu-count">{count}</span>
+                  </button>
+
+                  {isActive && getSubCategories().length > 1 && (
+                    <div className="sidebar-sub-accordion">
+                      {getSubCategories().map((subCat) => (
+                        <button
+                          key={subCat}
+                          type="button"
+                          className={`sidebar-sub-link ${activeSubCategory === subCat ? 'active' : ''}`}
+                          onClick={() => setActiveSubCategory(subCat)}
+                        >
+                          {subCat}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <button type="submit" className="btn-selector-submit">Cari Kemasan</button>
-              </form>
-              <div className="selector-footer">
-                <span>Butuh bantuan?</span>
-                <a href="https://wa.me/6282384442202" target="_blank" rel="noopener noreferrer">Hubungi WA Kami</a>
-              </div>
-            </div>
+              );
+            })}
+          </div>
+        </aside>
 
-            <div className="hero-banner-card">
-              <div className="banner-overlay"></div>
-              <div className="banner-content">
-                <span className="banner-badge">ALISAN PLASTIK - PARTNER BISNIS KULINER ANDA</span>
-                <h2 className="banner-title">Largest Catalog of Premium &amp; Food Grade Plastic Packaging</h2>
-                <p className="banner-subtitle">Pilihan terlengkap kemasan cup plastik, box thinwall, dan paper bowl dengan harga grosir terbaik.</p>
-                <div className="banner-stats">
-                  <div className="stat-item"><span className="stat-num">1M+</span><span className="stat-label">Produk Terjual</span></div>
-                  <div className="stat-item"><span className="stat-num">100%</span><span className="stat-label">Bahan Food Grade</span></div>
-                  <div className="stat-item"><span className="stat-num">Express</span><span className="stat-label">WhatsApp Delivery</span></div>
+        {/* KONTEN UTAMA SEBELAH KANAN */}
+        <main className="app-main-viewport">
+          {activeCategory === 'Semua' ? (
+            <>
+              {/* 1. HERO SECTION UTAMA */}
+              <section className="hero-section">
+                <div className="quick-selector-card">
+                  <div className="selector-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/>
+                    </svg>
+                    <h3>Pilih Kemasan Anda</h3>
+                  </div>
+                  <form onSubmit={handleQuickSearch} className="selector-form">
+                    <div className="selector-group">
+                      <label>Kategori Utama</label>
+                      <select 
+                        value={quickCategory} 
+                        onChange={(e) => { setQuickCategory(e.target.value); setQuickType('Semua Tipe'); }}
+                        className="selector-select"
+                      >
+                        <option value="Semua">Semua Kategori</option>
+                        {categories.map((cat) => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="selector-group">
+                      <label>Jenis / Sub-Kategori</label>
+                      <select 
+                        value={quickType} 
+                        onChange={(e) => setQuickType(e.target.value)}
+                        className="selector-select"
+                      >
+                        {getAllSubCategoriesForSelector().map((t, idx) => (
+                          <option key={idx} value={t}>{t}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <button type="submit" className="btn-selector-submit">Cari Kemasan</button>
+                  </form>
+                  <div className="selector-footer">
+                    <span>Butuh bantuan?</span>
+                    <a href="https://wa.me/6282384442202" target="_blank" rel="noopener noreferrer">Hubungi WA Kami</a>
+                  </div>
+                </div>
+
+                <div className="hero-banner-card">
+                  <div className="banner-overlay"></div>
+                  <div className="banner-content">
+                    <span className="banner-badge">ALISAN PLASTIK — DISTRIBUTOR &amp; GROSIR KEMASAN F&amp;B</span>
+                    <h2 className="banner-title">Pusat Kemasan F&amp;B, Plastik Premium &amp; Eco-Bio Friendly</h2>
+                    <p className="banner-subtitle">Pusat Kemasan F&amp;B Terlengkap &amp; Eco-Friendly — Solusi Cup Plastik, Thinwall Box, Paper Bowl &amp; Kemasan Bio Ramah Lingkungan dengan Harga Grosir Pabrik Tangan Pertama.</p>
+                    <div className="banner-stats">
+                      <div className="stat-item"><span className="stat-num">1M+</span><span className="stat-label">Produk Terjual</span></div>
+                      <div className="stat-item"><span className="stat-num">100%</span><span className="stat-label">Bahan Food Grade</span></div>
+                      <div className="stat-item"><span className="stat-num">Express</span><span className="stat-label">WhatsApp Delivery</span></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* 2. FEATURE BADGES */}
+              <section className="feature-badges-section">
+                <div className="feature-badge-item">
+                  <div className="badge-icon-wrap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+                  <div className="badge-text-wrap"><h4>Bahan Food Grade Premium</h4><p>Aman untuk makanan panas &amp; dingin</p></div>
+                </div>
+                <div className="feature-badge-item">
+                  <div className="badge-icon-wrap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 10v4M8 12h8"/></svg></div>
+                  <div className="badge-text-wrap"><h4>Harga Grosir Termurah</h4><p>Harga langsung dari tangan pertama</p></div>
+                </div>
+                <div className="feature-badge-item">
+                  <div className="badge-icon-wrap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+                  <div className="badge-text-wrap"><h4>Order WhatsApp Instan</h4><p>Proses cepat langsung kirim detailnya</p></div>
+                </div>
+                <div className="feature-badge-item">
+                  <div className="badge-icon-wrap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></div>
+                  <div className="badge-text-wrap"><h4>Pilihan Varian Ukuran</h4><p>Tersedia beragam ukuran sesuai kebutuhan</p></div>
+                </div>
+              </section>
+            </>
+          ) : (
+            /* HALAMAN KHUSUS KATEGORI TERPILIH */
+            <section className="dedicated-category-page-banner">
+              <div className="category-banner-card">
+                <div className="cat-banner-crumbs">
+                  <span onClick={() => setActiveCategory('Semua')} className="crumb-clickable">Katalog Utama</span>
+                  <span className="crumb-arrow">›</span>
+                  <span className="crumb-current">{activeCategory}</span>
+                </div>
+
+                <div className="cat-banner-header-row">
+                  <div>
+                    <h1 className="cat-banner-title">Koleksi Kemasan {activeCategory}</h1>
+                    <p className="cat-banner-subtitle">
+                      Menampilkan seluruh ragam {activeCategory} dengan berbagai spesifikasi ukuran, dimensi, dan harga per pack grosir termurah.
+                    </p>
+                  </div>
+
+                  <button 
+                    type="button" 
+                    className="btn-back-all-cats"
+                    onClick={() => { setActiveCategory('Semua'); setActiveSubCategory('Semua Tipe'); }}
+                  >
+                    ← Kembali ke Semua Katalog
+                  </button>
+                </div>
+
+                <div className="cat-banner-meta-bar">
+                  <span className="cat-meta-chip">📦 {filteredProducts.length} Produk Ditemukan</span>
+                  <span className="cat-meta-chip">✓ Food Grade Premium</span>
+                  <span className="cat-meta-chip">⚡ Ready Stock</span>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
 
-          {/* 2. FEATURE BADGES */}
-          <section className="feature-badges-section">
-            <div className="feature-badge-item">
-              <div className="badge-icon-wrap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-              <div className="badge-text-wrap"><h4>Bahan Food Grade Premium</h4><p>Aman untuk makanan panas &amp; dingin</p></div>
-            </div>
-            <div className="feature-badge-item">
-              <div className="badge-icon-wrap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 10v4M8 12h8"/></svg></div>
-              <div className="badge-text-wrap"><h4>Harga Grosir Termurah</h4><p>Harga langsung dari tangan pertama</p></div>
-            </div>
-            <div className="feature-badge-item">
-              <div className="badge-icon-wrap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
-              <div className="badge-text-wrap"><h4>Order WhatsApp Instan</h4><p>Proses cepat langsung kirim detailnya</p></div>
-            </div>
-            <div className="feature-badge-item">
-              <div className="badge-icon-wrap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></div>
-              <div className="badge-text-wrap"><h4>Pilihan Varian Ukuran</h4><p>Tersedia beragam ukuran sesuai kebutuhan</p></div>
-            </div>
-          </section>
-
-          {/* 3. QUICK NAV */}
-          <section className="quick-nav-section">
-            {categories.slice(0, 3).map((catName) => (
-              <div key={catName} className="quick-nav-card" onClick={() => { setActiveCategory(catName); setActiveSubCategory('Semua Tipe'); }}>
-                <div className="quick-nav-content"><h4>Koleksi {catName}</h4><span>Lihat Halaman &rarr;</span></div>
-              </div>
-            ))}
-            <div className="quick-nav-card highlight" onClick={() => window.open('https://wa.me/6282384442202', '_blank')}>
-              <div className="quick-nav-content"><h4>Sablon &amp; Custom Logo</h4><span>Konsultasi WA &rarr;</span></div>
-            </div>
-          </section>
-        </>
-      ) : (
-        /* HALAMAN KHUSUS KATEGORI TERPILIH */
-        <section className="dedicated-category-page-banner">
-          <div className="category-banner-card">
-            <div className="cat-banner-crumbs">
-              <span onClick={() => setActiveCategory('Semua')} className="crumb-clickable">Katalog Utama</span>
-              <span className="crumb-arrow">›</span>
-              <span className="crumb-current">{activeCategory}</span>
-            </div>
-
-            <div className="cat-banner-header-row">
-              <div>
-                <h1 className="cat-banner-title">Koleksi Kemasan {activeCategory}</h1>
-                <p className="cat-banner-subtitle">
-                  Menampilkan seluruh ragam {activeCategory} dengan berbagai spesifikasi ukuran, dimensi, dan harga per pack grosir termurah.
-                </p>
-              </div>
-
+          {/* 4. PRODUCT GRID & SUBCATEGORY FILTER */}
+          <section className="catalog-products-section" id="catalog-products">
+            {/* BARIS TOMBOL TRIGGER FILTER MOBILE */}
+            <div className="mobile-filter-trigger-bar">
               <button 
                 type="button" 
-                className="btn-back-all-cats"
-                onClick={() => { setActiveCategory('Semua'); setActiveSubCategory('Semua Tipe'); }}
+                className="btn-trigger-drawer"
+                onClick={() => setIsMobileDrawerOpen(true)}
               >
-                ← Kembali ke Semua Katalog
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                Filter Kategori ({activeCategory})
               </button>
+              <span className="mobile-product-count">{filteredProducts.length} Produk</span>
             </div>
 
-            <div className="cat-banner-meta-bar">
-              <span className="cat-meta-chip">📦 {filteredProducts.length} Produk Ditemukan</span>
-              <span className="cat-meta-chip">✓ Food Grade Premium</span>
-              <span className="cat-meta-chip">⚡ Ready Stock</span>
+            <div className="section-title-wrap">
+              <h2 className="section-title">
+                {activeCategory === 'Semua' ? 'Katalog Produk Terpilih' : `Daftar Produk ${activeCategory}`}
+              </h2>
             </div>
-          </div>
-        </section>
-      )}
 
-      {/* 4. PRODUCT GRID & SUBCATEGORY FILTER */}
-      <section className="catalog-products-section" id="catalog-products">
-        <div className="section-title-wrap">
-          <h2 className="section-title">
-            {activeCategory === 'Semua' ? 'Katalog Produk Terpilih' : `Daftar Produk ${activeCategory}`}
-          </h2>
-          {getSubCategories().length > 1 && (
-            <div className="subcategory-tabs-wrap">
-              {getSubCategories().map((subCat) => (
-                <button
-                  key={subCat}
-                  className={`tab-btn-sub ${activeSubCategory === subCat ? 'active' : ''}`}
-                  onClick={() => setActiveSubCategory(subCat)}
-                >
-                  {subCat}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="product-grid">
-          {filteredProducts.length > 0 ? (
+            <div className="product-grid">
+              {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => {
               const activeVariantIdx = selectedVariantMap[product.id] !== undefined ? selectedVariantMap[product.id] : 0;
               const activeVariant = product.variants?.length > 0
@@ -745,21 +909,55 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
           )}
         </div>
       </section>
+    </main>
+  </div>
 
-      {/* 5. PROMO BANNER */}
-      <section className="everything-needed-banner">
-        <div className="needed-banner-bg"></div>
-        <div className="needed-banner-content">
-          <h3>Everything you need is here!</h3>
-          <p>Butuh cetak sablon logo cup? Atau butuh penawaran khusus untuk kemasan restoran skala besar? Kami siap membantu.</p>
-          <div className="needed-banner-actions">
-            <button className="btn-needed-primary" onClick={() => window.open('https://wa.me/6282384442202', '_blank')}>Hubungi WA</button>
-            <button className="btn-needed-secondary" onClick={() => { setActiveCategory('Semua'); setActiveSubCategory('Semua Tipe'); document.getElementById('catalog-products')?.scrollIntoView({ behavior: 'smooth' }); }}>Lihat Katalog</button>
+      {/* 5. PROMO & SABLON CUSTOM LOGO BANNER (BAGIAN FOOTER YANG KAYA & ESTETIK) */}
+      <section className="rich-bottom-highlights-section">
+        <div className="sablon-promo-banner-card">
+          <div className="sablon-card-overlay"></div>
+          <div className="sablon-card-content">
+            <span className="sablon-badge">🎨 JASA SABLON &amp; BRANDING KEMASAN</span>
+            <h3 className="sablon-title">Cetak Sablon Logo Brand Anda di Cup Plastik &amp; Paper Bowl</h3>
+            <p className="sablon-desc">
+              Tingkatkan nilai profesionalitas usaha F&amp;B Anda! Kami melayani jasa cetak logo sablon presisi tinggi dengan pengerjaan cepat, tinta food grade, dan harga grosir langsung dari suplier utama.
+            </p>
+            <div className="sablon-actions">
+              <button 
+                type="button" 
+                className="btn-sablon-wa"
+                onClick={() => window.open('https://wa.me/6282384442202?text=Halo%20Admin%20Alisan%20Plastik,%20saya%20ingin%20konsultasi%20cetak%20sablon%20logo%20brand%20kemasan.', '_blank')}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.005 5.319 5.324.001 11.873.001c3.178.001 6.165 1.24 8.409 3.486 2.245 2.246 3.481 5.235 3.479 8.414-.005 6.557-5.322 11.875-11.872 11.875-2.001-.001-3.968-.507-5.717-1.472L0 24zm6.59-4.846c1.6.95 3.6 1.488 5.275 1.489 5.428 0 9.845-4.417 9.849-9.847.002-2.63-1.023-5.101-2.887-6.966a9.78 9.78 0 0 0-6.96-2.88c-5.428 0-9.849 4.42-9.853 9.85-.002 1.902.497 3.758 1.446 5.4L2.238 21.725l4.409-1.157zm11.215-7.617c-.3-.149-1.786-.881-2.067-.983-.281-.102-.485-.152-.689.153-.204.304-.787.983-.965 1.186-.178.203-.356.229-.656.079-.3-.15-1.266-.466-2.41-1.487-.89-.793-1.49-1.773-1.665-2.072-.175-.3-.019-.462.13-.611.135-.134.3-.349.45-.524.15-.175.2-.299.3-.499.1-.2.05-.375-.025-.524-.075-.15-.689-1.658-.944-2.272-.249-.598-.5-.517-.689-.527-.178-.009-.383-.01-.588-.01s-.538.077-.82.385c-.282.309-1.077 1.053-1.077 2.569 0 1.516 1.102 2.985 1.253 3.19.15.204 2.169 3.312 5.253 4.643.734.316 1.307.505 1.753.647.737.234 1.407.201 1.937.122.59-.088 1.786-.73 2.037-1.434.25-.704.25-1.307.175-1.434-.075-.127-.281-.203-.582-.352z" />
+                </svg>
+                Konsultasi Sablon via WA
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="store-location-card">
+          <h4 className="store-card-title">🏢 Toko Resmi ALISAN PLASTIK</h4>
+          <p className="store-card-desc">Partner terpercaya penyedia kemasan makanan dan minuman higienis, berkualitas tinggi, serta harga grosir bersahabat.</p>
+          <div className="store-details-list">
+            <div className="s-detail-item">
+              <span className="s-icon">📍</span>
+              <div><strong>Alamat:</strong> Jln Moh.Yamin No 45, Pekanbaru</div>
+            </div>
+            <div className="s-detail-item">
+              <span className="s-icon">📞</span>
+              <div><strong>Telp / WA:</strong> 0823-8444-2202</div>
+            </div>
+            <div className="s-detail-item">
+              <span className="s-icon">⏰</span>
+              <div><strong>Jam Operasional:</strong> Senin - Sabtu (08.00 - 18.00 WIB)</div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 6. FOOTER */}
+      {/* 6. FOOTER ORIGINAL LENGKAP */}
       <footer className="catalog-footer">
         <div className="footer-cols">
           <div className="footer-col-about">
@@ -771,19 +969,19 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
             </div>
           </div>
           <div className="footer-col-links">
-            <h5>Kemasan</h5>
+            <h5>Layanan Toko</h5>
             <ul>
-              {categories.map((cat) => (
-                <li key={cat} onClick={() => { setActiveCategory(cat); setActiveSubCategory('Semua Tipe'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-                  {cat}
-                </li>
-              ))}
+              <li>⚡ Order WhatsApp Instan</li>
+              <li>🎨 Sablon Logo Brand</li>
+              <li>📦 Grosir &amp; Partai Besar</li>
+              <li>🌱 Kemasan Bio Eco-Friendly</li>
+              <li>🚚 Pengiriman Siap Kirim</li>
             </ul>
           </div>
           <div className="footer-col-newsletter">
             <h5>Berlangganan Info Promo</h5>
             <p>Dapatkan update stok barang baru dan diskon khusus grosir langsung ke email Anda.</p>
-            <form onSubmit={(e) => { e.preventDefault(); alert('Terima kasih sudah berlangganan!'); }} className="newsletter-form">
+            <form onSubmit={(e) => { e.preventDefault(); alert('Terima kasih sudah berlangganan info promo!'); }} className="newsletter-form">
               <input type="email" placeholder="Masukkan email Anda..." required className="newsletter-input" />
               <button type="submit" className="newsletter-btn">&rarr;</button>
             </form>
