@@ -404,45 +404,14 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
 
                 {/* DESKRIPSI & SPESIFIKASI DENGAN DUKUNGAN PARAGRAF & ENTER */}
                 <div className="detail-description-container">
-                  <h4 className="detail-desc-header-title">📝 Deskripsi Lengkap Produk:</h4>
+                  <h4 className="detail-desc-header-title">Deskripsi Lengkap Produk:</h4>
                   <div className="detail-description">{detailProduct.description || 'Tidak ada deskripsi khusus.'}</div>
-                </div>
-
-                {/* GRID SPESIFIKASI UKURAN & MATERIAL */}
-                <div className="specifications-table-box">
-                  <h4 className="spec-table-title">📐 Tabel Spesifikasi Ukuran &amp; Material</h4>
-                  <div className="spec-table-grid">
-                    <div className="spec-grid-item">
-                      <span className="spec-label">🧪 Material / Bahan</span>
-                      <span className="spec-value highlight-mat">{detailProduct.subCategory || 'Food Grade Premium'}</span>
-                    </div>
-                    <div className="spec-grid-item">
-                      <span className="spec-label">📏 Ukuran Varian Aktif</span>
-                      <span className="spec-value"><strong>{detailActiveVariant?.size || 'Standar'}</strong></span>
-                    </div>
-                    <div className="spec-grid-item">
-                      <span className="spec-label">🌱 Fitur &amp; Keunggulan</span>
-                      <span className="spec-value eco-pills">
-                        <span className="eco-pill-badge">✓ Food Grade</span>
-                        <span className="eco-pill-badge">✓ Bebas BPA</span>
-                        {(detailProduct.category?.toLowerCase().includes('lunch') || detailProduct.category?.toLowerCase().includes('paper') || detailProduct.subCategory?.toLowerCase().includes('eco')) ? (
-                          <span className="eco-pill-badge bio">🌿 Eco / Bio Friendly</span>
-                        ) : (
-                          <span className="eco-pill-badge microwave">🔥 Safe for Hot/Cold</span>
-                        )}
-                      </span>
-                    </div>
-                    <div className="spec-grid-item">
-                      <span className="spec-label">📦 Min. Pemesanan (MOQ)</span>
-                      <span className="spec-value">{detailProduct.minOrder || '1 Pak'}</span>
-                    </div>
-                  </div>
                 </div>
 
                 {/* PILIH UKURAN & DIMENSI */}
                 {detailProduct.variants && detailProduct.variants.length > 0 && (
                   <div className="detail-variants-section">
-                    <h4 className="detail-variants-label">📦 Pilihan Ukuran & Dimensi:</h4>
+                    <h4 className="detail-variants-label">Pilihan Ukuran & Dimensi:</h4>
                     <div className="detail-variants-grid">
                       {detailProduct.variants.map((v, idx) => (
                         <button
@@ -464,7 +433,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                 {detailActiveVariant && (
                   <div className="detail-price-box">
                     <span className="detail-price-label">
-                      {detailActiveVariant.inStock ? '💰 Harga Satuan Utama' : '⚠ Stok Sedang Kosong'}
+                      {detailActiveVariant.inStock ? 'Harga Satuan Utama' : 'Stok Sedang Kosong'}
                     </span>
                     <div className="detail-price-value">
                       <span className="detail-price-rp">Rp</span>
@@ -490,22 +459,6 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                     )}
                   </div>
                 )}
-
-                {/* INFO ALAMAT & KONTAK TOKO */}
-                <div className="modal-store-contact-box">
-                  <div className="store-contact-item">
-                    <span className="sc-icon">🏢</span>
-                    <span className="sc-text"><strong>Toko Resmi:</strong> ALISAN PLASTIK</span>
-                  </div>
-                  <div className="store-contact-item">
-                    <span className="sc-icon">📍</span>
-                    <span className="sc-text"><strong>Alamat Toko:</strong> Jln Moh.Yamin No 45</span>
-                  </div>
-                  <div className="store-contact-item">
-                    <span className="sc-icon">📞</span>
-                    <span className="sc-text"><strong>Telp / WA Resmi:</strong> 0823-8444-2202</span>
-                  </div>
-                </div>
 
                 {/* TOMBOL ORDER WA */}
                 <a
@@ -539,7 +492,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
           <div className="drawer-header">
             <div className="drawer-title">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-              Filter &amp; Kategori Produk
+              Filter & Kategori Produk
             </div>
             <button className="btn-close-drawer" onClick={() => setIsMobileDrawerOpen(false)}>&times;</button>
           </div>
@@ -689,9 +642,9 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                 <div className="hero-banner-card">
                   <div className="banner-overlay"></div>
                   <div className="banner-content">
-                    <span className="banner-badge">ALISAN PLASTIK — DISTRIBUTOR &amp; GROSIR KEMASAN F&amp;B</span>
-                    <h2 className="banner-title">Pusat Kemasan F&amp;B, Plastik Premium &amp; Eco-Bio Friendly</h2>
-                    <p className="banner-subtitle">Pusat Kemasan F&amp;B Terlengkap &amp; Eco-Friendly — Solusi Cup Plastik, Thinwall Box, Paper Bowl &amp; Kemasan Bio Ramah Lingkungan dengan Harga Grosir Pabrik Tangan Pertama.</p>
+                    <span className="banner-badge">ALISAN PLASTIK — DISTRIBUTOR & GROSIR KEMASAN F&B</span>
+                    <h2 className="banner-title">Pusat Kemasan F&B, Plastik Premium & Eco-Bio Friendly</h2>
+                    <p className="banner-subtitle">Pusat Kemasan F&B Terlengkap & Eco-Friendly — Solusi Cup Plastik, Thinwall Box, Paper Bowl & Kemasan Bio Ramah Lingkungan dengan Harga Grosir Pabrik Tangan Pertama.</p>
                     <div className="banner-stats">
                       <div className="stat-item"><span className="stat-num">1M+</span><span className="stat-label">Produk Terjual</span></div>
                       <div className="stat-item"><span className="stat-num">100%</span><span className="stat-label">Bahan Food Grade</span></div>
@@ -705,7 +658,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
               <section className="feature-badges-section">
                 <div className="feature-badge-item">
                   <div className="badge-icon-wrap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-                  <div className="badge-text-wrap"><h4>Bahan Food Grade Premium</h4><p>Aman untuk makanan panas &amp; dingin</p></div>
+                  <div className="badge-text-wrap"><h4>Bahan Food Grade Premium</h4><p>Aman untuk makanan panas & dingin</p></div>
                 </div>
                 <div className="feature-badge-item">
                   <div className="badge-icon-wrap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 10v4M8 12h8"/></svg></div>
@@ -749,9 +702,9 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                 </div>
 
                 <div className="cat-banner-meta-bar">
-                  <span className="cat-meta-chip">📦 {filteredProducts.length} Produk Ditemukan</span>
-                  <span className="cat-meta-chip">✓ Food Grade Premium</span>
-                  <span className="cat-meta-chip">⚡ Ready Stock</span>
+                  <span className="cat-meta-chip">Produk: {filteredProducts.length} Item</span>
+                  <span className="cat-meta-chip">Food Grade Premium</span>
+                  <span className="cat-meta-chip">Ready Stock</span>
                 </div>
               </div>
             </section>
@@ -772,7 +725,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                       setActiveSubCategory('Semua Tipe');
                     }}
                   >
-                    {cat === 'Semua' ? '🏷️ Semua' : cat}
+                    {cat === 'Semua' ? 'Semua' : cat}
                   </button>
                 ))}
               </div>
@@ -783,10 +736,10 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                   className="mobile-all-categories-trigger"
                   onClick={() => setIsMobileDrawerOpen(true)}
                 >
-                  <span className="m-icon">📂</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
                   <div className="m-text-wrap">
                     <strong>Kategori: {activeCategory}</strong>
-                    <span>Klik untuk lihat semua kategori &amp; filter &rarr;</span>
+                    <span>Klik untuk lihat semua kategori & filter &rarr;</span>
                   </div>
                 </button>
                 <span className="mobile-product-count">{filteredProducts.length} Produk</span>
@@ -828,7 +781,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
 
                     {photoCount > 1 && (
                       <span className="photo-count-badge">
-                        📷 {photoCount} Foto
+                        {photoCount} Foto
                       </span>
                     )}
 
@@ -930,15 +883,13 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
           )}
         </div>
       </section>
-    </main>
-  </div>
 
-      {/* 5. PROMO & SABLON CUSTOM LOGO BANNER (BAGIAN FOOTER YANG KAYA & ESTETIK) */}
+      {/* 5. PROMO & SABLON CUSTOM LOGO BANNER */}
       <section className="rich-bottom-highlights-section">
         <div className="sablon-promo-banner-card">
           <div className="sablon-card-overlay"></div>
           <div className="sablon-card-content">
-            <span className="sablon-badge">🎨 JASA SABLON &amp; BRANDING KEMASAN</span>
+            <span className="sablon-badge">JASA SABLON &amp; BRANDING KEMASAN</span>
             <h3 className="sablon-title">Cetak Sablon Logo Brand Anda di Cup Plastik &amp; Paper Bowl</h3>
             <p className="sablon-desc">
               Tingkatkan nilai profesionalitas usaha F&amp;B Anda! Kami melayani jasa cetak logo sablon presisi tinggi dengan pengerjaan cepat, tinta food grade, dan harga grosir langsung dari suplier utama.
@@ -954,25 +905,6 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                 </svg>
                 Konsultasi Sablon via WA
               </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="store-location-card">
-          <h4 className="store-card-title">🏢 Toko Resmi ALISAN PLASTIK</h4>
-          <p className="store-card-desc">Partner terpercaya penyedia kemasan makanan dan minuman higienis, berkualitas tinggi, serta harga grosir bersahabat.</p>
-          <div className="store-details-list">
-            <div className="s-detail-item">
-              <span className="s-icon">📍</span>
-              <div><strong>Alamat:</strong> Jln Moh.Yamin No 45, Pekanbaru</div>
-            </div>
-            <div className="s-detail-item">
-              <span className="s-icon">📞</span>
-              <div><strong>Telp / WA:</strong> 0823-8444-2202</div>
-            </div>
-            <div className="s-detail-item">
-              <span className="s-icon">⏰</span>
-              <div><strong>Jam Operasional:</strong> Senin - Sabtu (08.00 - 18.00 WIB)</div>
             </div>
           </div>
         </div>
@@ -992,11 +924,11 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
           <div className="footer-col-links">
             <h5>Layanan Toko</h5>
             <ul>
-              <li>⚡ Order WhatsApp Instan</li>
-              <li>🎨 Sablon Logo Brand</li>
-              <li>📦 Grosir &amp; Partai Besar</li>
-              <li>🌱 Kemasan Bio Eco-Friendly</li>
-              <li>🚚 Pengiriman Siap Kirim</li>
+              <li>Order WhatsApp Instan</li>
+              <li>Sablon Logo Brand</li>
+              <li>Grosir &amp; Partai Besar</li>
+              <li>Kemasan Bio Eco-Friendly</li>
+              <li>Pengiriman Siap Kirim</li>
             </ul>
           </div>
           <div className="footer-col-newsletter">
@@ -1012,8 +944,9 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
           <p>&copy; {new Date().getFullYear()} ALISAN PLASTIK. All Rights Reserved. Designed for Professional Catalog.</p>
         </div>
       </footer>
-
-    </div>
+    </main>
+  </div>
+  </div>
   );
 }
 

@@ -53,9 +53,10 @@ body {
 }
 
 .top-header-bar {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1.15rem 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.85rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -272,9 +273,9 @@ body {
 .main-content-global {
   flex-grow: 1;
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .catalog-wrapper {
@@ -4121,24 +4122,18 @@ body {
 
 /* ==================== RICH BOTTOM HIGHLIGHTS SECTION ==================== */
 .rich-bottom-highlights-section {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 1.5rem;
+  display: block;
   width: 100%;
   margin: 1.5rem 0;
 }
 
-@media (max-width: 900px) {
-  .rich-bottom-highlights-section {
-    grid-template-columns: 1fr;
-  }
-}
-
 .sablon-promo-banner-card {
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 2.25rem;
   color: var(--white);
   overflow: hidden;
   box-shadow: var(--shadow-md);
