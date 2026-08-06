@@ -3468,25 +3468,90 @@ body {
   }
 }
 
-@media (max-width: 480px) {
-  /* Main product grid layout on very small phones */
+@media (max-width: 768px) {
+  /* Layout 3 Kolom ala Shopee di layar Tablet / HP */
   .product-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+
+  .image-container {
+    height: 130px;
+  }
+
+  .product-info {
+    padding: 0.65rem 0.5rem;
+    gap: 0.35rem;
+  }
+
+  .product-title {
+    font-size: 0.78rem;
+    line-height: 1.25;
+    margin-bottom: 0.15rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .category-badge, .subcategory-badge-card {
+    font-size: 0.55rem;
+    padding: 0.15rem 0.35rem;
+  }
+
+  .product-price-label {
+    font-size: 0.62rem;
+  }
+
+  .product-price {
+    font-size: 0.88rem;
+  }
+
+  .btn-detail {
+    padding: 0.45rem 0.3rem;
+    font-size: 0.7rem;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Layout 3 Kolom Rapi Ala Shopee di Layar HP HP Kecil */
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+
+  .image-container {
+    height: 110px;
+  }
+
+  .product-info {
+    padding: 0.45rem 0.35rem;
+    gap: 0.25rem;
+  }
+
+  .product-title {
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+
+  .product-price-label {
+    font-size: 0.58rem;
+  }
+
+  .product-price {
+    font-size: 0.8rem;
+  }
+
+  .btn-detail {
+    padding: 0.35rem 0.2rem;
+    font-size: 0.65rem;
+    border-radius: 6px;
   }
 
   .shopee-main-image-wrap {
     height: 230px;
   }
-
-  .cat-banner-title {
-    font-size: 1.4rem;
-  }
-
-  .cat-banner-subtitle {
-    font-size: 0.8rem;
-  }
-
 }
 
 /* ==================== SECTION 3: VERTICAL CARD VARIANTS STYLING ==================== */
