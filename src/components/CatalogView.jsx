@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 function CatalogView({ products, categories = [], activeCategory, setActiveCategory, searchQuery }) {
   const [activeSubCategory, setActiveSubCategory] = useState('Semua Tipe');
   const [selectedVariantMap, setSelectedVariantMap] = useState({});
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(true);
 
   // Reset subkategori ketika kategori aktif berubah (mencegah bug "0 produk ditemukan")
   useEffect(() => {
@@ -616,54 +617,89 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
       {/* MAIN DASHBOARD LAYOUT (SIDEBAR KIRI & VIEWPORT KANAN ALA SCREENSHOT ACUAN) */}
       <div className="dashboard-app-layout">
         
-        {/* SIDEBAR VERTIKAL KIRI (MINIMALIS & TANPA EMOJI) */}
+        {/* SIDEBAR VERTIKAL KIRI (DROPDOWN KATEGORI DI DALAM 'SEMUA PRODUK') */}
         <aside className="app-vertical-sidebar">
-          <div className="sidebar-section-label">Kategori Produk</div>
+          <div className="sidebar-section-label">Navigasi Katalog</div>
 
           <div className="sidebar-menu-list">
-            {['Semua', ...categories].map((cat) => {
-              const count = cat === 'Semua' ? products.length : products.filter(p => p.category?.toLowerCase() === cat.toLowerCase()).length;
-              const isActive = activeCategory === cat;
+            {/* TOMBOL INDUK: SEMUA PRODUK (ACCORDION DROPDOWN KATEGORI) */}
+            <div className="sidebar-menu-group">
+              <button
+                type="button"
+                className={`sidebar-menu-item parent-dropdown-btn ${activeCategory === 'Semua' ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveCategory('Semua');
+                  setActiveSubCategory('Semua Tipe');
+                  setIsCategoryDropdownOpen(prev => !prev);
+                }}
+              >
+                <div className="menu-item-left">
+                  <span className="menu-dot"></span>
+                  <span className="menu-title">Semua Produk</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span className="menu-count">{products.length}</span>
+                  <span className="dropdown-arrow-icon" style={{ fontSize: '0.75rem', opacity: 0.8 }}>
+                    {isCategoryDropdownOpen ? '▲' : '▼'}
+                  </span>
+                </div>
+              </button>
 
-              return (
-                <div key={cat} className="sidebar-menu-group">
-                  <button
-                    type="button"
-                    className={`sidebar-menu-item ${isActive ? 'active' : ''}`}
-                    onClick={() => {
-                      setActiveCategory(cat);
-                      setActiveSubCategory('Semua Tipe');
-                      scrollToProducts(cat);
-                    }}
-                    title={cat}
-                  >
-                    <div className="menu-item-left">
-                      <span className="menu-dot"></span>
-                      <span className="menu-title">{cat === 'Semua' ? 'Semua Produk' : cat}</span>
-                    </div>
-                    <span className="menu-count">{count}</span>
-                  </button>
+              {/* LIST DROPDOWN KATEGORI DI DALAM 'SEMUA PRODUK' */}
+              {isCategoryDropdownOpen && (
+                <div className="sidebar-category-dropdown-container" style={{ paddingLeft: '0.65rem', marginTop: '0.35rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                  {categories.map((cat) => {
+                    const count = products.filter(p => p.category?.toLowerCase() === cat.toLowerCase()).length;
+                    const isActive = activeCategory === cat;
 
-                  {isActive && getSubCategories().length > 1 && (
-                    <div className="sidebar-sub-accordion">
-                      {getSubCategories().map((subCat) => (
+                    return (
+                      <div key={cat} className="sidebar-sub-category-wrapper">
                         <button
-                          key={subCat}
                           type="button"
-                          className={`sidebar-sub-link ${activeSubCategory === subCat ? 'active' : ''}`}
+                          className={`sidebar-menu-item child-cat-item ${isActive ? 'active' : ''}`}
                           onClick={() => {
-                            setActiveSubCategory(subCat);
-                            scrollToProducts(activeCategory);
+                            setActiveCategory(cat);
+                            setActiveSubCategory('Semua Tipe');
+                            scrollToProducts(cat);
+                          }}
+                          title={cat}
+                          style={{
+                            borderRadius: '10px',
+                            fontSize: '0.85rem',
+                            padding: '0.65rem 0.85rem'
                           }}
                         >
-                          {subCat}
+                          <div className="menu-item-left">
+                            <span className="menu-dot" style={{ width: '6px', height: '6px' }}></span>
+                            <span className="menu-title">{cat}</span>
+                          </div>
+                          <span className="menu-count">{count}</span>
                         </button>
-                      ))}
-                    </div>
-                  )}
+
+                        {/* ACCORDION SUB-TIPE BILA KATEGORI AKTIF */}
+                        {isActive && getSubCategories().length > 1 && (
+                          <div className="sidebar-sub-accordion" style={{ marginLeft: '0.85rem', marginTop: '0.25rem' }}>
+                            {getSubCategories().map((subCat) => (
+                              <button
+                                key={subCat}
+                                type="button"
+                                className={`sidebar-sub-link ${activeSubCategory === subCat ? 'active' : ''}`}
+                                onClick={() => {
+                                  setActiveSubCategory(subCat);
+                                  scrollToProducts(activeCategory);
+                                }}
+                              >
+                                {subCat}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
+              )}
+            </div>
           </div>
         </aside>
 
