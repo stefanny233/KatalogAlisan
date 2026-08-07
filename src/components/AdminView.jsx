@@ -24,7 +24,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
 
   // State Varian Ukuran Opsional (Lengkap: Panjang, Lebar, Tinggi, Diameter, Vol ml, Oz, Foto Varian)
   const [variants, setVariants] = useState([
-    { size: '', price: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameter: '', ml: '', oz: '', rawSize: '', imageUrl: '' }
+    { size: '', price: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameterTop: '', diameterBottom: '', ml: '', oz: '', rawSize: '', imageUrl: '' }
   ]);
 
   // State Input Kategori Baru
@@ -124,7 +124,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
 
   // Tambah baris varian ukuran
   const addVariantRow = () => {
-    setVariants([...variants, { size: '', price: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameter: '', ml: '', oz: '', rawSize: '', imageUrl: '' }]);
+    setVariants([...variants, { size: '', price: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameterTop: '', diameterBottom: '', ml: '', oz: '', rawSize: '', imageUrl: '' }]);
   };
 
   // Hapus baris varian
@@ -173,9 +173,16 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
       parts.push(`${plt} cm`);
     }
 
-    // Diameter
-    if (v.diameter) {
-      parts.push(`Ø ${v.diameter} cm`);
+    // Diameter Atas & Diameter Bawah
+    const dTop = v.diameterTop || v.diameter;
+    const dBot = v.diameterBottom;
+
+    if (dTop && dBot) {
+      parts.push(`Ø Atas ${dTop}cm / Bawah ${dBot}cm`);
+    } else if (dTop) {
+      parts.push(`Ø Atas ${dTop}cm`);
+    } else if (dBot) {
+      parts.push(`Ø Bawah ${dBot}cm`);
     }
 
     // Oz
@@ -219,7 +226,8 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
           panjang: v.panjang || '',
           lebar: v.lebar || '',
           tinggi: v.tinggi || '',
-          diameter: v.diameter || '',
+          diameterTop: v.diameterTop || v.diameter || '',
+          diameterBottom: v.diameterBottom || '',
           ml: v.ml || '',
           oz: v.oz || '',
           imageUrl: v.imageUrl || ''
@@ -248,7 +256,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
     setDescription('');
     setImageUrl('');
     setExtraImages([]);
-    setVariants([{ size: '', price: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameter: '', ml: '', oz: '', rawSize: '', imageUrl: '' }]);
+    setVariants([{ size: '', price: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameterTop: '', diameterBottom: '', ml: '', oz: '', rawSize: '', imageUrl: '' }]);
   };
 
   // Submit Simpan Kategori Baru
@@ -290,7 +298,9 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
           panjang: v.panjang,
           lebar: v.lebar,
           tinggi: v.tinggi,
-          diameter: v.diameter,
+          diameterTop: v.diameterTop,
+          diameterBottom: v.diameterBottom,
+          diameter: v.diameterTop || v.diameter,
           ml: v.ml,
           oz: v.oz,
           imageUrl: v.imageUrl
@@ -921,13 +931,24 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                             </div>
 
                             <div className="v-field">
-                              <label>Diameter (cm)</label>
+                              <label>Diameter Atas (cm)</label>
                               <input 
                                 type="number" 
                                 step="0.1" 
-                                placeholder="Ø (cm)" 
-                                value={v.diameter || ''}
-                                onChange={(e) => handleVariantChange(index, 'diameter', e.target.value)}
+                                placeholder="Ø Atas (cm)" 
+                                value={v.diameterTop || v.diameter || ''}
+                                onChange={(e) => handleVariantChange(index, 'diameterTop', e.target.value)}
+                              />
+                            </div>
+
+                            <div className="v-field">
+                              <label>Diameter Bawah (cm)</label>
+                              <input 
+                                type="number" 
+                                step="0.1" 
+                                placeholder="Ø Bawah (cm)" 
+                                value={v.diameterBottom || ''}
+                                onChange={(e) => handleVariantChange(index, 'diameterBottom', e.target.value)}
                               />
                             </div>
 

@@ -6,6 +6,9 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
+  // Urutkan kategori secara alfabetis (A-Z)
+  const sortedCategories = [...categories].sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+
   // Reset subkategori ketika kategori aktif berubah (mencegah bug "0 produk ditemukan")
   useEffect(() => {
     setActiveSubCategory('Semua Tipe');
@@ -579,7 +582,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
           <div className="drawer-body">
             <div className="drawer-section-title">Kategori Utama</div>
             <div className="drawer-categories-list">
-              {['Semua', ...categories].map((cat) => {
+              {['Semua', ...sortedCategories].map((cat) => {
                 const count = cat === 'Semua' ? products.length : products.filter(p => p.category.toLowerCase() === cat.toLowerCase()).length;
                 return (
                   <button
@@ -683,9 +686,9 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
               </button>
             </div>
 
-            {/* GRUP KATEGORI SPESIFIK (DIPOSISIKAN TERTIBA DI TENGAH SIDEBAR) */}
+            {/* GRUP KATEGORI SPESIFIK (DIPOSISIKAN TERTIBA DI TENGAH SIDEBAR & TERSUSUN ALFABETIS A-Z) */}
             <div className="sidebar-categories-separated-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', width: '95%', margin: '0 auto' }}>
-              {categories.map((cat) => {
+              {sortedCategories.map((cat) => {
                 const count = products.filter(p => p.category?.toLowerCase() === cat.toLowerCase()).length;
                 const isActive = activeCategory === cat;
 
