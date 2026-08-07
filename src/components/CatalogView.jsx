@@ -699,6 +699,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                             setActiveCategory(cat);
                             setActiveSubCategory('Semua Tipe');
                             scrollToProducts(cat);
+                            setIsMobileSidebarOpen(false);
                           }}
                           title={cat}
                           style={{
@@ -725,6 +726,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                                 onClick={() => {
                                   setActiveSubCategory(subCat);
                                   scrollToProducts(activeCategory);
+                                  setIsMobileSidebarOpen(false);
                                 }}
                               >
                                 {subCat}
