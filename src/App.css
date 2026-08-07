@@ -3097,25 +3097,39 @@ body {
 .detail-description-container {
   background-color: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 1rem 1.15rem;
-  margin-bottom: 1.25rem;
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.1rem;
 }
 
 .detail-desc-header-title {
   font-size: 0.85rem;
   font-weight: 800;
   color: var(--primary-dark);
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
 }
 
 .detail-description {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: #334155;
-  line-height: 1.7;
+  line-height: 1.65;
   white-space: pre-line;
   word-break: break-word;
   margin: 0;
+  max-height: 160px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+  padding-right: 0.35rem;
+}
+
+.detail-description::-webkit-scrollbar {
+  width: 5px;
+}
+
+.detail-description::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 
 /* Pilih varian */
