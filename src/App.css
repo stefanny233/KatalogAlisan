@@ -3279,45 +3279,18 @@ body {
   margin: 0;
 }
 
-/* Hover overlay pada gambar kartu produk */
+/* Clean hover effect pada gambar kartu produk tanpa overlay mengganggu */
 .clickable-image {
   cursor: pointer;
+  overflow: hidden;
 }
 
-.image-hover-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(15, 23, 42, 0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.25s ease;
+.clickable-image .product-image {
+  transition: transform 0.3s ease;
 }
 
-.clickable-image:hover .image-hover-overlay {
-  background: rgba(15, 23, 42, 0.45);
-}
-
-.overlay-text {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: #fff;
-  font-size: 0.85rem;
-  font-weight: 700;
-  font-family: var(--font-sans);
-  background: rgba(213,181,140,0.9);
-  color: var(--primary-dark);
-  padding: 0.45rem 0.9rem;
-  border-radius: 20px;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.22s ease, transform 0.22s ease;
-}
-
-.clickable-image:hover .overlay-text {
-  opacity: 1;
-  transform: translateY(0);
+.clickable-image:hover .product-image {
+  transform: scale(1.05);
 }
 
 .clickable-title {

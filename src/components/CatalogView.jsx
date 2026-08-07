@@ -47,6 +47,17 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
     document.body.style.overflow = 'hidden';
   };
 
+  // Klik kartu produk: jika di 'Semua', langsung pindah ke halaman kategori (TANPA POP-UP). Jika sudah di halaman kategori, baru buka detail modal.
+  const handleCardClick = (product) => {
+    if (activeCategory === 'Semua' && product.category) {
+      setActiveCategory(product.category);
+      setActiveSubCategory('Semua Tipe');
+      scrollToProducts(product.category);
+    } else {
+      openDetail(product);
+    }
+  };
+
   // Tutup modal detail produk
   const closeDetail = () => {
     setDetailProduct(null);
@@ -178,7 +189,7 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
     );
   };
 
-  // Filter produk
+  // Filter produk berdasarkan pencarian dan kategori
   const filteredProducts = products.filter(product => {
     const matchesCategory = activeCategory === 'Semua' || 
       (product.category && product.category.trim().toLowerCase() === activeCategory.trim().toLowerCase());
@@ -189,6 +200,35 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
                           (product.subCategory && product.subCategory.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSubCategory && matchesSearch;
   });
+
+  // Dapatkan postingan pertama dari masing-masing kategori untuk tampilan Dashboard 'Semua'
+  const getFirstProductPerCategory = () => {
+    const featuredList = [];
+    const seenCategories = new Set();
+
+    categories.forEach(cat => {
+      const firstProd = products.find(p => p.category && p.category.trim().toLowerCase() === cat.trim().toLowerCase());
+      if (firstProd && !seenCategories.has(firstProd.category.toLowerCase())) {
+        featuredList.push(firstProd);
+        seenCategories.add(firstProd.category.toLowerCase());
+      }
+    });
+
+    products.forEach(p => {
+      const catKey = (p.category || 'Lainnya').trim().toLowerCase();
+      if (!seenCategories.has(catKey)) {
+        featuredList.push(p);
+        seenCategories.add(catKey);
+      }
+    });
+
+    return featuredList;
+  };
+
+  // Tentukan produk mana yang ditampilkan (jika 'Semua', tampilkan 1 produk pertama per kategori)
+  const displayedProducts = (activeCategory === 'Semua' && !searchQuery.trim() && activeSubCategory === 'Semua Tipe')
+    ? getFirstProductPerCategory()
+    : filteredProducts;
 
   const handleVariantSelect = (productId, variantIndex) => {
     setSelectedVariantMap(prev => ({
@@ -390,6 +430,40 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                     ))}
                   </div>
                 )}
+
+                {/* PILIH UKURAN & DIMENSI (DILETAK DI KOLOM KIRI DI BAWAH THUMBNAILS FOTO) */}
+                {detailProduct.variants && detailProduct.variants.length > 0 && (
+                  <div className="detail-variants-section" style={{ marginTop: '0.75rem', width: '100%' }}>
+                    <h4 className="detail-variants-label">Pilihan Ukuran &amp; Dimensi:</h4>
+                    <div className="detail-variants-grid">
+                      {detailProduct.variants.map((v, idx) => {
+                        const isSelected = detailVariantIdx === idx;
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            className={`detail-variant-btn ${isSelected ? 'active' : ''} ${!v.inStock ? 'out-of-stock' : ''}`}
+                            onClick={() => handleSelectModalVariant(idx)}
+                          >
+                            <div className="dv-left-info">
+                              <span className={`dv-radio-circle ${isSelected ? 'selected' : ''}`}>
+                                {isSelected ? '✓' : ''}
+                              </span>
+                              <span className="dv-size">{v.size}</span>
+                            </div>
+                            <div className="dv-right-info">
+                              {v.inStock ? (
+                                <span className="dv-price">Rp {formatRupiah(v.price)} <small>/ pack</small></span>
+                              ) : (
+                                <span className="dv-empty">Stok Habis</span>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Kolom Kanan: Info Produk & Variasi */}
@@ -449,39 +523,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                   </div>
                 )}
 
-                {/* PILIH UKURAN & DIMENSI */}
-                {detailProduct.variants && detailProduct.variants.length > 0 && (
-                  <div className="detail-variants-section">
-                    <h4 className="detail-variants-label">Pilihan Ukuran & Dimensi:</h4>
-                    <div className="detail-variants-grid">
-                      {detailProduct.variants.map((v, idx) => {
-                        const isSelected = detailVariantIdx === idx;
-                        return (
-                          <button
-                            key={idx}
-                            type="button"
-                            className={`detail-variant-btn ${isSelected ? 'active' : ''} ${!v.inStock ? 'out-of-stock' : ''}`}
-                            onClick={() => handleSelectModalVariant(idx)}
-                          >
-                            <div className="dv-left-info">
-                              <span className={`dv-radio-circle ${isSelected ? 'selected' : ''}`}>
-                                {isSelected ? '✓' : ''}
-                              </span>
-                              <span className="dv-size">{v.size}</span>
-                            </div>
-                            <div className="dv-right-info">
-                              {v.inStock ? (
-                                <span className="dv-price">Rp {formatRupiah(v.price)} <small>/ pack</small></span>
-                              ) : (
-                                <span className="dv-empty">Stok Habis</span>
-                              )}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
+
 
                 {/* DESKRIPSI & SPESIFIKASI DENGAN DUKUNGAN PARAGRAF & ENTER */}
                 <div className="detail-description-container">
@@ -714,13 +756,18 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
 
             <div className="section-title-wrap">
               <h2 className="section-title">
-                {activeCategory === 'Semua' ? 'Katalog Produk Terpilih' : `Daftar Produk ${activeCategory}`}
+                {activeCategory === 'Semua' ? 'Preview Produk Utama Per Kategori' : `Daftar Produk ${activeCategory}`}
               </h2>
+              {activeCategory === 'Semua' && !searchQuery.trim() && (
+                <p className="section-subtitle-note" style={{ fontSize: '0.82rem', color: '#64748b', marginTop: '0.25rem', fontWeight: 600 }}>
+                  Menampilkan 1 postingan pertama dari tiap kategori. Pilih kategori di sidebar untuk melihat produk selengkapnya.
+                </p>
+              )}
             </div>
 
             <div className="product-grid">
-              {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => {
+              {displayedProducts.length > 0 ? (
+                displayedProducts.map((product) => {
               const activeVariantIdx = selectedVariantMap[product.id] !== undefined ? selectedVariantMap[product.id] : 0;
               const activeVariant = product.variants?.length > 0
                 ? (product.variants[activeVariantIdx] || product.variants[0])
@@ -731,11 +778,11 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
 
               return (
                 <div key={product.id} className="product-card">
-                  {/* Area gambar — klik buka detail Shopee */}
+                  {/* Area gambar — klik alihkan ke kategori (di 'Semua') atau buka detail */}
                   <div
                     className="image-container clickable-image"
-                    onClick={() => openDetail(product)}
-                    title="Klik untuk lihat galeri & detail produk"
+                    onClick={() => handleCardClick(product)}
+                    title={activeCategory === 'Semua' ? `Buka Halaman Kategori ${product.category}` : 'Lihat Detail & Galeri Foto'}
                   >
                     {product.labelBadge && product.labelBadge !== 'Tanpa Label' && (
                       <span className={`label-badge-highlight ${getBadgeClass(product.labelBadge)}`}>
@@ -761,20 +808,12 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                     ) : (
                       renderFallbackImage(product.category, product.name)
                     )}
-
-                    {/* Overlay "Lihat Detail" saat hover */}
-                    <div className="image-hover-overlay">
-                      <span className="overlay-text">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/></svg>
-                        Lihat Detail ({photoCount} Foto)
-                      </span>
-                    </div>
                   </div>
 
                   <div className="product-info">
                     <h3
                       className="product-title clickable-title"
-                      onClick={() => openDetail(product)}
+                      onClick={() => handleCardClick(product)}
                     >
                       {product.name}
                     </h3>
@@ -791,9 +830,9 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                     <button
                       type="button"
                       className="btn-detail-trigger-neat"
-                      onClick={() => openDetail(product)}
+                      onClick={() => handleCardClick(product)}
                     >
-                      Lihat Detail & Varian
+                      {activeCategory === 'Semua' ? `Buka Katalog ${product.category} →` : 'Lihat Detail & Varian'}
                     </button>
                   </div>
                 </div>
@@ -816,66 +855,70 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
         </div>
       </section>
 
-      {/* 5. PROMO & SABLON CUSTOM LOGO BANNER */}
-      <section className="rich-bottom-highlights-section">
-        <div className="sablon-promo-banner-card">
-          <div className="sablon-card-overlay"></div>
-          <div className="sablon-card-content">
-            <span className="sablon-badge">JASA SABLON &amp; BRANDING KEMASAN</span>
-            <h3 className="sablon-title">Cetak Sablon Logo Brand Anda di Cup Plastik &amp; Paper Bowl</h3>
-            <p className="sablon-desc">
-              Tingkatkan nilai profesionalitas usaha F&amp;B Anda! Kami melayani jasa cetak logo sablon presisi tinggi dengan pengerjaan cepat, tinta food grade, dan harga grosir langsung dari suplier utama.
-            </p>
-            <div className="sablon-actions">
-              <button 
-                type="button" 
-                className="btn-sablon-wa"
-                onClick={() => window.open('https://wa.me/6282384442202?text=Halo%20Admin%20Alisan%20Plastik,%20saya%20ingin%20konsultasi%20cetak%20sablon%20logo%20brand%20kemasan.', '_blank')}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.005 5.319 5.324.001 11.873.001c3.178.001 6.165 1.24 8.409 3.486 2.245 2.246 3.481 5.235 3.479 8.414-.005 6.557-5.322 11.875-11.872 11.875-2.001-.001-3.968-.507-5.717-1.472L0 24zm6.59-4.846c1.6.95 3.6 1.488 5.275 1.489 5.428 0 9.845-4.417 9.849-9.847.002-2.63-1.023-5.101-2.887-6.966a9.78 9.78 0 0 0-6.96-2.88c-5.428 0-9.849 4.42-9.853 9.85-.002 1.902.497 3.758 1.446 5.4L2.238 21.725l4.409-1.157zm11.215-7.617c-.3-.149-1.786-.881-2.067-.983-.281-.102-.485-.152-.689.153-.204.304-.787.983-.965 1.186-.178.203-.356.229-.656.079-.3-.15-1.266-.466-2.41-1.487-.89-.793-1.49-1.773-1.665-2.072-.175-.3-.019-.462.13-.611.135-.134.3-.349.45-.524.15-.175.2-.299.3-.499.1-.2.05-.375-.025-.524-.075-.15-.689-1.658-.944-2.272-.249-.598-.5-.517-.689-.527-.178-.009-.383-.01-.588-.01s-.538.077-.82.385c-.282.309-1.077 1.053-1.077 2.569 0 1.516 1.102 2.985 1.253 3.19.15.204 2.169 3.312 5.253 4.643.734.316 1.307.505 1.753.647.737.234 1.407.201 1.937.122.59-.088 1.786-.73 2.037-1.434.25-.704.25-1.307.175-1.434-.075-.127-.281-.203-.582-.352z" />
-                </svg>
-                Konsultasi Sablon via WA
-              </button>
+      {/* 5. PROMO BANNER & FOOTER (HANYA DITAMPILKAN SAAT KATALOG UTAMA 'SEMUA' AKTIF) */}
+      {activeCategory === 'Semua' && (
+        <>
+          <section className="rich-bottom-highlights-section">
+            <div className="sablon-promo-banner-card">
+              <div className="sablon-card-overlay"></div>
+              <div className="sablon-card-content">
+                <span className="sablon-badge">JASA SABLON &amp; BRANDING KEMASAN</span>
+                <h3 className="sablon-title">Cetak Sablon Logo Brand Anda di Cup Plastik &amp; Paper Bowl</h3>
+                <p className="sablon-desc">
+                  Tingkatkan nilai profesionalitas usaha F&amp;B Anda! Kami melayani jasa cetak logo sablon presisi tinggi dengan pengerjaan cepat, tinta food grade, dan harga grosir langsung dari suplier utama.
+                </p>
+                <div className="sablon-actions">
+                  <button 
+                    type="button" 
+                    className="btn-sablon-wa"
+                    onClick={() => window.open('https://wa.me/6282384442202?text=Halo%20Admin%20Alisan%20Plastik,%20saya%20ingin%20konsultasi%20cetak%20sablon%20logo%20brand%20kemasan.', '_blank')}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.005 5.319 5.324.001 11.873.001c3.178.001 6.165 1.24 8.409 3.486 2.245 2.246 3.481 5.235 3.479 8.414-.005 6.557-5.322 11.875-11.872 11.875-2.001-.001-3.968-.507-5.717-1.472L0 24zm6.59-4.846c1.6.95 3.6 1.488 5.275 1.489 5.428 0 9.845-4.417 9.849-9.847.002-2.63-1.023-5.101-2.887-6.966a9.78 9.78 0 0 0-6.96-2.88c-5.428 0-9.849 4.42-9.853 9.85-.002 1.902.497 3.758 1.446 5.4L2.238 21.725l4.409-1.157zm11.215-7.617c-.3-.149-1.786-.881-2.067-.983-.281-.102-.485-.152-.689.153-.204.304-.787.983-.965 1.186-.178.203-.356.229-.656.079-.3-.15-1.266-.466-2.41-1.487-.89-.793-1.49-1.773-1.665-2.072-.175-.3-.019-.462.13-.611.135-.134.3-.349.45-.524.15-.175.2-.299.3-.499.1-.2.05-.375-.025-.524-.075-.15-.689-1.658-.944-2.272-.249-.598-.5-.517-.689-.527-.178-.009-.383-.01-.588-.01s-.538.077-.82.385c-.282.309-1.077 1.053-1.077 2.569 0 1.516 1.102 2.985 1.253 3.19.15.204 2.169 3.312 5.253 4.643.734.316 1.307.505 1.753.647.737.234 1.407.201 1.937.122.59-.088 1.786-.73 2.037-1.434.25-.704.25-1.307.175-1.434-.075-.127-.281-.203-.582-.352z" />
+                    </svg>
+                    Konsultasi Sablon via WA
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      {/* 6. FOOTER ORIGINAL LENGKAP */}
-      <footer className="catalog-footer">
-        <div className="footer-cols">
-          <div className="footer-col-about">
-            <h4>ALISAN PLASTIK</h4>
-            <p>Partner terpercaya penyedia kemasan makanan dan minuman higienis, berkualitas tinggi, serta harga grosir bersahabat.</p>
-            <div className="footer-contacts">
-              <span>WA: +62 823-8444-2202</span>
-              <span>Alamat: Jln. Moh. Yamin No 45, Pekanbaru, Riau</span>
+          {/* 6. FOOTER ORIGINAL LENGKAP */}
+          <footer className="catalog-footer">
+            <div className="footer-cols">
+              <div className="footer-col-about">
+                <h4>ALISAN PLASTIK</h4>
+                <p>Partner terpercaya penyedia kemasan makanan dan minuman higienis, berkualitas tinggi, serta harga grosir bersahabat.</p>
+                <div className="footer-contacts">
+                  <span>WA: +62 823-8444-2202</span>
+                  <span>Alamat: Jln. Moh. Yamin No 45, Pekanbaru, Riau</span>
+                </div>
+              </div>
+              <div className="footer-col-links">
+                <h5>Layanan Toko</h5>
+                <ul>
+                  <li>Order WhatsApp Instan</li>
+                  <li>Sablon Logo Brand</li>
+                  <li>Grosir &amp; Partai Besar</li>
+                  <li>Kemasan Bio Eco-Friendly</li>
+                  <li>Pengiriman Siap Kirim</li>
+                </ul>
+              </div>
+              <div className="footer-col-newsletter">
+                <h5>Berlangganan Info Promo</h5>
+                <p>Dapatkan update stok barang baru dan diskon khusus grosir langsung ke email Anda.</p>
+                <form onSubmit={(e) => { e.preventDefault(); alert('Terima kasih sudah berlangganan info promo!'); }} className="newsletter-form">
+                  <input type="email" placeholder="Masukkan email Anda..." required className="newsletter-input" />
+                  <button type="submit" className="newsletter-btn">&rarr;</button>
+                </form>
+              </div>
             </div>
-          </div>
-          <div className="footer-col-links">
-            <h5>Layanan Toko</h5>
-            <ul>
-              <li>Order WhatsApp Instan</li>
-              <li>Sablon Logo Brand</li>
-              <li>Grosir &amp; Partai Besar</li>
-              <li>Kemasan Bio Eco-Friendly</li>
-              <li>Pengiriman Siap Kirim</li>
-            </ul>
-          </div>
-          <div className="footer-col-newsletter">
-            <h5>Berlangganan Info Promo</h5>
-            <p>Dapatkan update stok barang baru dan diskon khusus grosir langsung ke email Anda.</p>
-            <form onSubmit={(e) => { e.preventDefault(); alert('Terima kasih sudah berlangganan info promo!'); }} className="newsletter-form">
-              <input type="email" placeholder="Masukkan email Anda..." required className="newsletter-input" />
-              <button type="submit" className="newsletter-btn">&rarr;</button>
-            </form>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} ALISAN PLASTIK. All Rights Reserved. Designed for Professional Catalog.</p>
-        </div>
-      </footer>
+            <div className="footer-bottom">
+              <p>&copy; {new Date().getFullYear()} ALISAN PLASTIK. All Rights Reserved. Designed for Professional Catalog.</p>
+            </div>
+          </footer>
+        </>
+      )}
     </main>
   </div>
   </div>
