@@ -4483,30 +4483,30 @@ body {
     display: flex;
   }
 
-  /* Tombol Trigger di HP (Di Atas - Tepat Di Bawah Header) */
+  /* Tombol Trigger di HP (Posisi Alami Di Atas Katalog - Tidak Melayang/Terbang Saat Scroll) */
   .mobile-sidebar-floating-btn {
-    position: sticky;
-    top: 75px;
-    left: 0;
-    right: 0;
-    z-index: 1500;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    z-index: 10;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
     padding: 0.85rem 1.25rem;
-    border-radius: 0 0 14px 14px;
+    border-radius: 12px;
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: #d5b58c;
-    border: none;
-    border-bottom: 2px solid #d5b58c;
+    border: 1.5px solid #d5b58c;
     font-size: 0.9rem;
     font-weight: 800;
     font-family: var(--font-sans);
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.25);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
     cursor: pointer;
     transition: transform 0.2s ease, background 0.2s ease;
+    margin-bottom: 0.5rem;
   }
 
   .mobile-sidebar-floating-btn:active {

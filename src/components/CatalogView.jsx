@@ -660,85 +660,83 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
           <div className="sidebar-section-label">Katalog Produk</div>
 
           <div className="sidebar-menu-list">
-            {/* TOMBOL INDUK: SEMUA PRODUK (ACCORDION DROPDOWN KATEGORI) */}
-            <div className="sidebar-menu-group">
+            {/* KARTU UTAMA TERPISAH: SEMUA PRODUK */}
+            <div className="sidebar-menu-group" style={{ marginBottom: '0.65rem' }}>
               <button
                 type="button"
                 className={`sidebar-menu-item parent-dropdown-btn ${activeCategory === 'Semua' ? 'active' : ''}`}
                 onClick={() => {
                   setActiveCategory('Semua');
                   setActiveSubCategory('Semua Tipe');
-                  setIsCategoryDropdownOpen(prev => !prev);
+                  setIsMobileSidebarOpen(false);
+                }}
+                style={{
+                  border: activeCategory === 'Semua' ? '1.5px solid #d5b58c' : '1.5px solid #334155',
+                  boxShadow: '0 4px 12px rgba(15, 23, 42, 0.2)'
                 }}
               >
                 <div className="menu-item-left">
-                  <span className="menu-dot"></span>
-                  <span className="menu-title">Semua Produk</span>
+                  <span className="menu-dot" style={{ backgroundColor: activeCategory === 'Semua' ? '#d5b58c' : '#38bdf8' }}></span>
+                  <span className="menu-title" style={{ fontWeight: 800 }}>Semua Produk</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <span className="menu-count">{products.length}</span>
-                  <span className="dropdown-arrow-icon" style={{ fontSize: '0.75rem', opacity: 0.8 }}>
-                    {isCategoryDropdownOpen ? '▲' : '▼'}
-                  </span>
-                </div>
+                <span className="menu-count" style={{ fontWeight: 800 }}>{products.length}</span>
               </button>
+            </div>
 
-              {/* LIST DROPDOWN KATEGORI DI DALAM 'SEMUA PRODUK' */}
-              {isCategoryDropdownOpen && (
-                <div className="sidebar-category-dropdown-container" style={{ paddingLeft: '0.65rem', marginTop: '0.35rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                  {categories.map((cat) => {
-                    const count = products.filter(p => p.category?.toLowerCase() === cat.toLowerCase()).length;
-                    const isActive = activeCategory === cat;
+            {/* GRUP KATEGORI SPESIFIK (DIPOSISIKAN TERTIBA DI TENGAH SIDEBAR) */}
+            <div className="sidebar-categories-separated-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', width: '95%', margin: '0 auto' }}>
+              {categories.map((cat) => {
+                const count = products.filter(p => p.category?.toLowerCase() === cat.toLowerCase()).length;
+                const isActive = activeCategory === cat;
 
-                    return (
-                      <div key={cat} className="sidebar-sub-category-wrapper">
-                        <button
-                          type="button"
-                          className={`sidebar-menu-item child-cat-item ${isActive ? 'active' : ''}`}
-                          onClick={() => {
-                            setActiveCategory(cat);
-                            setActiveSubCategory('Semua Tipe');
-                            scrollToProducts(cat);
-                            setIsMobileSidebarOpen(false);
-                          }}
-                          title={cat}
-                          style={{
-                            borderRadius: '10px',
-                            fontSize: '0.85rem',
-                            padding: '0.65rem 0.85rem'
-                          }}
-                        >
-                          <div className="menu-item-left">
-                            <span className="menu-dot" style={{ width: '6px', height: '6px' }}></span>
-                            <span className="menu-title">{cat}</span>
-                          </div>
-                          <span className="menu-count">{count}</span>
-                        </button>
-
-                        {/* ACCORDION SUB-TIPE BILA KATEGORI AKTIF */}
-                        {isActive && getSubCategories().length > 1 && (
-                          <div className="sidebar-sub-accordion" style={{ marginLeft: '0.85rem', marginTop: '0.25rem' }}>
-                            {getSubCategories().map((subCat) => (
-                              <button
-                                key={subCat}
-                                type="button"
-                                className={`sidebar-sub-link ${activeSubCategory === subCat ? 'active' : ''}`}
-                                onClick={() => {
-                                  setActiveSubCategory(subCat);
-                                  scrollToProducts(activeCategory);
-                                  setIsMobileSidebarOpen(false);
-                                }}
-                              >
-                                {subCat}
-                              </button>
-                            ))}
-                          </div>
-                        )}
+                return (
+                  <div key={cat} className="sidebar-menu-group">
+                    <button
+                      type="button"
+                      className={`sidebar-menu-item child-cat-item ${isActive ? 'active' : ''}`}
+                      onClick={() => {
+                        setActiveCategory(cat);
+                        setActiveSubCategory('Semua Tipe');
+                        scrollToProducts(cat);
+                        setIsMobileSidebarOpen(false);
+                      }}
+                      title={cat}
+                      style={{
+                        borderRadius: '8px',
+                        fontSize: '0.81rem',
+                        padding: '0.5rem 0.75rem',
+                        border: isActive ? '1.5px solid #d5b58c' : '1px solid rgba(51, 65, 85, 0.75)'
+                      }}
+                    >
+                      <div className="menu-item-left">
+                        <span className="menu-dot" style={{ width: '5px', height: '5px', backgroundColor: isActive ? '#d5b58c' : '#64748b' }}></span>
+                        <span className="menu-title" style={{ fontWeight: isActive ? 800 : 600 }}>{cat}</span>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+                      <span className="menu-count" style={{ fontSize: '0.68rem', padding: '0.1rem 0.4rem' }}>{count}</span>
+                    </button>
+
+                    {/* ACCORDION SUB-TIPE BILA KATEGORI AKTIF */}
+                    {isActive && getSubCategories().length > 1 && (
+                      <div className="sidebar-sub-accordion" style={{ marginLeft: '0.85rem', marginTop: '0.25rem' }}>
+                        {getSubCategories().map((subCat) => (
+                          <button
+                            key={subCat}
+                            type="button"
+                            className={`sidebar-sub-link ${activeSubCategory === subCat ? 'active' : ''}`}
+                            onClick={() => {
+                              setActiveSubCategory(subCat);
+                              scrollToProducts(activeCategory);
+                              setIsMobileSidebarOpen(false);
+                            }}
+                          >
+                            {subCat}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
