@@ -601,207 +601,211 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
 
           <form onSubmit={handleSubmit} className="admin-neat-form">
             
-            {/* LANGKAH 1: INFORMASI UTAMA PRODUK */}
-            <div className="form-card-step">
-              <div className="step-header">
-                <div className="step-badge">1</div>
-                <div>
-                  <h3 className="step-title">Informasi Utama Produk</h3>
-                  <p className="step-subtitle">Isi nama, kategori, merk bahan, dan keterangan pemesanan.</p>
-                </div>
-              </div>
+            {/* BARIS ATAS 2 KOLOM (LANGKAH 1 & LANGKAH 2 BERSAMPINGAN AGAR PANJANG KE SEBELAH) */}
+            <div className="admin-form-top-row">
               
-              <div className="step-content">
-                <div className="form-field-group">
-                  <div className="field-label-row">
-                    <label className="field-label">Nama Produk Utama</label>
-                    <span className="badge-required">Wajib Isi</span>
+              {/* LANGKAH 1: INFORMASI UTAMA PRODUK */}
+              <div className="form-card-step step-left-col">
+                <div className="step-header">
+                  <div className="step-badge">1</div>
+                  <div>
+                    <h3 className="step-title">Informasi Utama Produk</h3>
+                    <p className="step-subtitle">Isi nama, kategori, merk bahan, dan keterangan pemesanan.</p>
                   </div>
-                  <input 
-                    type="text" 
-                    placeholder="Contoh: Thinwall Rectangular Box Makan Bening"
-                    className="field-input-neat"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
-                  <span className="field-hint">Gunakan nama yang jelas agar mudah dicari pembeli.</span>
                 </div>
-
-                <div className="form-grid-2col">
+                
+                <div className="step-content">
                   <div className="form-field-group">
                     <div className="field-label-row">
-                      <label className="field-label">Kategori Utama</label>
+                      <label className="field-label">Nama Produk Utama</label>
                       <span className="badge-required">Wajib Isi</span>
                     </div>
-                    <select 
-                      className="field-select-neat"
-                      value={category}
-                      onChange={handleCategoryChange}
-                    >
-                      {categories.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="form-field-group">
-                    <div className="field-label-row">
-                      <label className="field-label">Sub-Kategori / Merk / Bahan</label>
-                      <span className="badge-optional">(Opsional)</span>
-                    </div>
                     <input 
                       type="text" 
-                      placeholder="Contoh: Tutup Rapat, PP Starindo, Eco Brown"
+                      placeholder="Contoh: Thinwall Rectangular Box Makan Bening"
                       className="field-input-neat"
-                      value={subCategory}
-                      onChange={(e) => setSubCategory(e.target.value)}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
                     />
-                  </div>
-                </div>
-
-                <div className="form-grid-2col">
-                  <div className="form-field-group">
-                    <label className="field-label">Label Promo Highlight (Katalog Guest)</label>
-                    <select 
-                      className="field-select-neat"
-                      value={labelBadge}
-                      onChange={(e) => setLabelBadge(e.target.value)}
-                    >
-                      <option value="Tanpa Label">Tanpa Label Promo</option>
-                      <option value="Terlaris">Terlaris (Best Seller - Lencana Emas)</option>
-                      <option value="Promo">Promo Diskon (Lencana Merah)</option>
-                      <option value="Baru">Produk Baru (Lencana Biru)</option>
-                      <option value="Rekomendasi">Rekomendasi Admin (Lencana Gelap)</option>
-                    </select>
+                    <span className="field-hint">Gunakan nama yang jelas agar mudah dicari pembeli.</span>
                   </div>
 
-                  <div className="form-field-group">
-                    <label className="field-label">Minimal Pemesanan & Isi (Min. Order)</label>
-                    <input 
-                      type="text" 
-                      placeholder="Contoh: Isi 50 pcs/pack atau 1 Dus (500 pcs)"
-                      className="field-input-neat"
-                      value={minOrder}
-                      onChange={(e) => setMinOrder(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="form-field-group">
-                  <label className="field-label">Deskripsi Lengkap &amp; Spesifikasi Produk</label>
-                  <textarea 
-                    placeholder="Contoh format deskripsi rapi:&#10;&#10;• Bahan: Plastik PP Food Grade tebal &amp; bening&#10;• Fitur: Tahan panas, tidak mudah sobek, dapat dipress sealer&#10;• Cocok untuk: Kopi susu, boba, jus, dan es teh&#10;&#10;Catatan:&#10;Isi per pack 50 pcs. Pembelian grosir tersedia harga dus/bal."
-                    className="field-textarea-neat"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={6}
-                  />
-                  <span className="field-hint">Tekan Enter untuk membuat paragraf/baris baru. Format spasi &amp; poin akan tampil rapi di detail pop-up.</span>
-                </div>
-              </div>
-            </div>
-
-            {/* LANGKAH 2: UPLOAD GALERI FOTO BANYAK (Shopee Multi-Photo Gallery) */}
-            <div className="form-card-step">
-              <div className="step-header">
-                <div className="step-badge">2</div>
-                <div>
-                  <h3 className="step-title">Galeri Foto Produk</h3>
-                  <p className="step-subtitle">Upload foto utama dan foto-foto varian lain agar pengunjung melihat detail produk.</p>
-                </div>
-              </div>
-
-              <div className="step-content">
-                <div className="image-uploader-container">
-                  
-                  <div className="uploader-mode-selector">
-                    <button 
-                      type="button" 
-                      className={`mode-btn ${imageInputMode === 'file' ? 'active' : ''}`}
-                      onClick={() => setImageInputMode('file')}
-                    >
-                      📁 Upload File
-                    </button>
-                    <button 
-                      type="button" 
-                      className={`mode-btn ${imageInputMode === 'url' ? 'active' : ''}`}
-                      onClick={() => setImageInputMode('url')}
-                    >
-                      🔗 Gunakan Link Gambar Web
-                    </button>
-                  </div>
-
-                  {imageInputMode === 'file' ? (
-                    <div className="upload-dropzones-stack">
-                      
-                      {/* Uploader Foto Utama */}
-                      <div className="upload-dropzone">
-                        <input 
-                          type="file" 
-                          accept="image/*" 
-                          id="neat-file-input-main"
-                          onChange={handleMainFileChange}
-                          style={{ display: 'none' }}
-                        />
-                        
-                        <label htmlFor="neat-file-input-main" className="dropzone-label">
-                          <div className="dropzone-icon-circle">📸</div>
-                          <span className="dropzone-text-primary">Klik untuk Pilih FOTO UTAMA</span>
-                          <span className="dropzone-text-secondary">Foto sampul depan katalog</span>
-                        </label>
+                  <div className="form-grid-2col">
+                    <div className="form-field-group">
+                      <div className="field-label-row">
+                        <label className="field-label">Kategori Utama</label>
+                        <span className="badge-required">Wajib Isi</span>
                       </div>
-
-                      {/* Uploader Foto Galeri Banyak */}
-                      <div className="upload-dropzone secondary-dz">
-                        <input 
-                          type="file" 
-                          accept="image/*" 
-                          multiple
-                          id="neat-file-input-extra"
-                          onChange={handleExtraFilesChange}
-                          style={{ display: 'none' }}
-                        />
-                        <label htmlFor="neat-file-input-extra" className="dropzone-label">
-                          <div className="dropzone-icon-circle">🖼️</div>
-                          <span className="dropzone-text-primary">Upload FOTO LAIN / VARIAN (Bisa Pilih Banyak)</span>
-                        </label>
-                      </div>
-
+                      <select 
+                        className="field-select-neat"
+                        value={category}
+                        onChange={handleCategoryChange}
+                      >
+                        {categories.map((cat) => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
                     </div>
-                  ) : (
-                    <div className="form-field-group" style={{ marginTop: '1rem' }}>
+
+                    <div className="form-field-group">
+                      <div className="field-label-row">
+                        <label className="field-label">Sub-Kategori / Merk / Bahan</label>
+                        <span className="badge-optional">(Opsional)</span>
+                      </div>
                       <input 
                         type="text" 
-                        placeholder="https://images.unsplash.com/... (URL Foto Utama)"
+                        placeholder="Contoh: Tutup Rapat, PP Starindo, Eco Brown"
                         className="field-input-neat"
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
+                        value={subCategory}
+                        onChange={(e) => setSubCategory(e.target.value)}
                       />
                     </div>
-                  )}
+                  </div>
 
-                  {/* GALERI PREVIEW FOTO-FOTO DENGAN TOMBOL HAPUS */}
-                  <div className="multi-photo-gallery-preview">
-                    {imageUrl && (
-                      <div className="photo-thumb-card is-main">
-                        <span className="thumb-badge">FOTO UTAMA</span>
-                        <img src={resolveImageUrl(imageUrl)} alt="Foto Utama" />
-                        <button type="button" onClick={() => setImageUrl('')} className="btn-thumb-del">&times;</button>
+                  <div className="form-grid-2col">
+                    <div className="form-field-group">
+                      <label className="field-label">Label Promo Highlight</label>
+                      <select 
+                        className="field-select-neat"
+                        value={labelBadge}
+                        onChange={(e) => setLabelBadge(e.target.value)}
+                      >
+                        <option value="Tanpa Label">Tanpa Label Promo</option>
+                        <option value="Terlaris">Terlaris (Best Seller - Lencana Emas)</option>
+                        <option value="Promo">Promo Diskon (Lencana Merah)</option>
+                        <option value="Baru">Produk Baru (Lencana Biru)</option>
+                        <option value="Rekomendasi">Rekomendasi Admin (Lencana Gelap)</option>
+                      </select>
+                    </div>
+
+                    <div className="form-field-group">
+                      <label className="field-label">Minimal Pemesanan & Isi (Min. Order)</label>
+                      <input 
+                        type="text" 
+                        placeholder="Contoh: Isi 50 pcs/pack atau 1 Dus (500 pcs)"
+                        className="field-input-neat"
+                        value={minOrder}
+                        onChange={(e) => setMinOrder(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-field-group">
+                    <label className="field-label">Deskripsi Lengkap &amp; Spesifikasi Produk</label>
+                    <textarea 
+                      placeholder="Contoh format deskripsi rapi:&#10;&#10;• Bahan: Plastik PP Food Grade tebal &amp; bening&#10;• Fitur: Tahan panas, tidak mudah sobek, dapat dipress sealer&#10;• Cocok untuk: Kopi susu, boba, jus, dan es teh&#10;&#10;Catatan:&#10;Isi per pack 50 pcs. Pembelian grosir tersedia harga dus/bal."
+                      className="field-textarea-neat"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={5}
+                    />
+                    <span className="field-hint">Tekan Enter untuk membuat paragraf/baris baru.</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* LANGKAH 2: UPLOAD GALERI FOTO BANYAK */}
+              <div className="form-card-step step-right-col">
+                <div className="step-header">
+                  <div className="step-badge">2</div>
+                  <div>
+                    <h3 className="step-title">Galeri Foto Produk</h3>
+                    <p className="step-subtitle">Upload foto utama dan foto varian pendukung.</p>
+                  </div>
+                </div>
+
+                <div className="step-content">
+                  <div className="image-uploader-container">
+                    
+                    <div className="uploader-mode-selector">
+                      <button 
+                        type="button" 
+                        className={`mode-btn ${imageInputMode === 'file' ? 'active' : ''}`}
+                        onClick={() => setImageInputMode('file')}
+                      >
+                        📁 Upload File
+                      </button>
+                      <button 
+                        type="button" 
+                        className={`mode-btn ${imageInputMode === 'url' ? 'active' : ''}`}
+                        onClick={() => setImageInputMode('url')}
+                      >
+                        🔗 Link Gambar Web
+                      </button>
+                    </div>
+
+                    {imageInputMode === 'file' ? (
+                      <div className="upload-dropzones-stack">
+                        
+                        {/* Uploader Foto Utama */}
+                        <div className="upload-dropzone">
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            id="neat-file-input-main"
+                            onChange={handleMainFileChange}
+                            style={{ display: 'none' }}
+                          />
+                          <label htmlFor="neat-file-input-main" className="dropzone-label">
+                            <div className="dropzone-icon-circle">📸</div>
+                            <span className="dropzone-text-primary">Pilih FOTO UTAMA</span>
+                            <span className="dropzone-text-secondary">Foto sampul depan katalog</span>
+                          </label>
+                        </div>
+
+                        {/* Uploader Foto Galeri Banyak */}
+                        <div className="upload-dropzone secondary-dz">
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            multiple
+                            id="neat-file-input-extra"
+                            onChange={handleExtraFilesChange}
+                            style={{ display: 'none' }}
+                          />
+                          <label htmlFor="neat-file-input-extra" className="dropzone-label">
+                            <div className="dropzone-icon-circle">🖼️</div>
+                            <span className="dropzone-text-primary">Upload FOTO LAIN / VARIAN (Bisa Pilih Banyak)</span>
+                          </label>
+                        </div>
+
+                      </div>
+                    ) : (
+                      <div className="form-field-group" style={{ marginTop: '1rem' }}>
+                        <input 
+                          type="text" 
+                          placeholder="https://images.unsplash.com/... (URL Foto Utama)"
+                          className="field-input-neat"
+                          value={imageUrl}
+                          onChange={(e) => setImageUrl(e.target.value)}
+                        />
                       </div>
                     )}
 
-                    {extraImages.map((img, idx) => (
-                      <div key={idx} className="photo-thumb-card">
-                        <span className="thumb-badge">FOTO #{idx + 2}</span>
-                        <img src={resolveImageUrl(img)} alt={`Foto ${idx + 2}`} />
-                        <button type="button" onClick={() => removeExtraImage(idx)} className="btn-thumb-del">&times;</button>
-                      </div>
-                    ))}
-                  </div>
+                    {/* GALERI PREVIEW FOTO-FOTO DENGAN TOMBOL HAPUS */}
+                    <div className="multi-photo-gallery-preview">
+                      {imageUrl && (
+                        <div className="photo-thumb-card is-main">
+                          <span className="thumb-badge">FOTO UTAMA</span>
+                          <img src={resolveImageUrl(imageUrl)} alt="Foto Utama" />
+                          <button type="button" onClick={() => setImageUrl('')} className="btn-thumb-del">&times;</button>
+                        </div>
+                      )}
 
+                      {extraImages.map((img, idx) => (
+                        <div key={idx} className="photo-thumb-card">
+                          <span className="thumb-badge">FOTO #{idx + 2}</span>
+                          <img src={resolveImageUrl(img)} alt={`Foto ${idx + 2}`} />
+                          <button type="button" onClick={() => removeExtraImage(idx)} className="btn-thumb-del">&times;</button>
+                        </div>
+                      ))}
+                    </div>
+
+                  </div>
                 </div>
               </div>
+
             </div>
 
             {/* LANGKAH 3: CARD VARIAN UKURAN, DIMENSI, FOTO VARIAN & HARGA (VERTIKAL CARD LAYOUT) */}
@@ -949,10 +953,11 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                           </div>
                         </div>
 
-                        {/* KELOMPOK 2: HARGA MULTI-SATUAN */}
+                        {/* KELOMPOK 2: HARGA MULTI-SATUAN (2 KOLOM X 2 BARIS) */}
                         <div className="variant-group-box highlight-price">
                           <h4 className="group-box-title">💰 Kelompok Harga Multi-Satuan</h4>
-                          <div className="group-fields-grid price-grid">
+                          <div className="group-fields-grid price-grid-2x2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.85rem' }}>
+                            {/* BARIS 1: PACK & ROLL */}
                             <div className="v-field">
                               <label>Harga per Pack (Rp) <span className="req-star">*</span></label>
                               <div className="price-input-wrapper">
@@ -980,8 +985,9 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                               </div>
                             </div>
 
+                            {/* BARIS 2: DUS / BAL & PCS */}
                             <div className="v-field">
-                              <label>Harga per pcs (Rp) <span className="opt-tag">(Opsional)</span></label>
+                              <label>Harga per Dus / Bal (Rp) <span className="opt-tag">(Opsional)</span></label>
                               <div className="price-input-wrapper">
                                 <span>Rp</span>
                                 <input 
@@ -989,6 +995,19 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                                   placeholder="0" 
                                   value={v.priceDus || ''}
                                   onChange={(e) => handleVariantChange(index, 'priceDus', e.target.value)}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="v-field">
+                              <label>Harga per Pcs (Rp) <span className="opt-tag">(Opsional)</span></label>
+                              <div className="price-input-wrapper">
+                                <span>Rp</span>
+                                <input 
+                                  type="number" 
+                                  placeholder="0" 
+                                  value={v.pricePcs || ''}
+                                  onChange={(e) => handleVariantChange(index, 'pricePcs', e.target.value)}
                                 />
                               </div>
                             </div>

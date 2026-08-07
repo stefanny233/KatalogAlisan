@@ -505,7 +505,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                       <span className="detail-price-size"> / pack ({detailActiveVariant.size})</span>
                     </div>
 
-                    {(detailActiveVariant.priceRoll || detailActiveVariant.priceDus) && (
+                    {(detailActiveVariant.priceRoll || detailActiveVariant.priceDus || detailActiveVariant.pricePcs) && (
                       <div className="detail-multi-pricing-row">
                         {detailActiveVariant.priceRoll && (
                           <div className="multi-price-badge">
@@ -517,6 +517,12 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                           <div className="multi-price-badge">
                             <span className="mp-unit">Harga Dus / Bal:</span>
                             <span className="mp-val">Rp {formatRupiah(detailActiveVariant.priceDus)}</span>
+                          </div>
+                        )}
+                        {detailActiveVariant.pricePcs && (
+                          <div className="multi-price-badge">
+                            <span className="mp-unit">Harga per Pcs:</span>
+                            <span className="mp-val">Rp {formatRupiah(detailActiveVariant.pricePcs)}</span>
                           </div>
                         )}
                       </div>
@@ -619,7 +625,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
         
         {/* SIDEBAR VERTIKAL KIRI (DROPDOWN KATEGORI DI DALAM 'SEMUA PRODUK') */}
         <aside className="app-vertical-sidebar">
-          <div className="sidebar-section-label">Navigasi Katalog</div>
+          <div className="sidebar-section-label">Katalog Produk</div>
 
           <div className="sidebar-menu-list">
             {/* TOMBOL INDUK: SEMUA PRODUK (ACCORDION DROPDOWN KATEGORI) */}
