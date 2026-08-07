@@ -4251,27 +4251,100 @@ body {
   background-color: var(--white);
   border-right: 1px solid #e2e8f0;
   border-radius: 0; /* Nempel 100% ke pinggir kiri! */
-  padding: 1.5rem 0.85rem;
+  padding: 1.25rem 0.85rem;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
   position: sticky;
   top: 75px;
   height: calc(100vh - 75px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.sidebar-menu-list {
+  flex: 1;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
+  padding-right: 0.15rem;
 }
 
-.app-vertical-sidebar::-webkit-scrollbar {
+/* Sidebar Category Scrollable Dropdown Container */
+.sidebar-category-dropdown-container {
+  max-height: 380px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+  padding-right: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+.sidebar-category-dropdown-container::-webkit-scrollbar {
   width: 4px;
 }
 
-.app-vertical-sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.app-vertical-sidebar::-webkit-scrollbar-thumb {
+.sidebar-category-dropdown-container::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 4px;
+}
+
+/* Sidebar Social Media & Contact Section (DI UJUNG BAWAH SIDEBAR) */
+.sidebar-social-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  padding-bottom: 0.25rem;
+  border-top: 1.5px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  background-color: var(--white);
+  flex-shrink: 0;
+}
+
+.social-footer-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-social-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-social-btn.instagram-btn {
+  background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+  color: #ffffff;
+  border: none;
+}
+
+.sidebar-social-btn.instagram-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(253, 29, 29, 0.3);
+}
+
+.sidebar-social-btn.whatsapp-btn {
+  background-color: #25d366;
+  color: #ffffff;
+  border: none;
+}
+
+.sidebar-social-btn.whatsapp-btn:hover {
+  background-color: #1ebc57;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
 }
 
 @media (max-width: 990px) {

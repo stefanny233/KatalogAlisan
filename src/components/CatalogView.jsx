@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 function CatalogView({ products, categories = [], activeCategory, setActiveCategory, searchQuery }) {
   const [activeSubCategory, setActiveSubCategory] = useState('Semua Tipe');
   const [selectedVariantMap, setSelectedVariantMap] = useState({});
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(true);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
   // Reset subkategori ketika kategori aktif berubah (mencegah bug "0 produk ditemukan")
   useEffect(() => {
@@ -700,6 +700,39 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                 </div>
               )}
             </div>
+          </div>
+
+          {/* HUBUNGI & SOSMED TOKO */}
+          <div className="sidebar-social-footer">
+            <div className="social-footer-label">Hubungi &amp; Sosmed Toko:</div>
+            
+            <a 
+              href="https://instagram.com/alisan_plastik" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="sidebar-social-btn instagram-btn"
+              title="Kunjungi Instagram @alisan_plastik"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+              <span>@alisan_plastik</span>
+            </a>
+
+            <a 
+              href="https://wa.me/6282384442202?text=Halo%20Admin%20Alisan%20Plastik,%20saya%20ingin%20tanya%20produk%20kemasan." 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="sidebar-social-btn whatsapp-btn"
+              title="Chat WA Official Alisan Plastik"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.005 5.319 5.324.001 11.873.001c3.178.001 6.165 1.24 8.409 3.486 2.245 2.246 3.481 5.235 3.479 8.414-.005 6.557-5.322 11.875-11.872 11.875-2.001-.001-3.968-.507-5.717-1.472L0 24zm6.59-4.846c1.6.95 3.6 1.488 5.275 1.489 5.428 0 9.845-4.417 9.849-9.847.002-2.63-1.023-5.101-2.887-6.966a9.78 9.78 0 0 0-6.96-2.88c-5.428 0-9.849 4.42-9.853 9.85-.002 1.902.497 3.758 1.446 5.4L2.238 21.725l4.409-1.157zm11.215-7.617c-.3-.149-1.786-.881-2.067-.983-.281-.102-.485-.152-.689.153-.204.304-.787.983-.965 1.186-.178.203-.356.229-.656.079-.3-.15-1.266-.466-2.41-1.487-.89-.793-1.49-1.773-1.665-2.072-.175-.3-.019-.462.13-.611.135-.134.3-.349.45-.524.15-.175.2-.299.3-.499.1-.2.05-.375-.025-.524-.075-.15-.689-1.658-.944-2.272-.249-.598-.5-.517-.689-.527-.178-.009-.383-.01-.588-.01s-.538.077-.82.385c-.282.309-1.077 1.053-1.077 2.569 0 1.516 1.102 2.985 1.253 3.19.15.204 2.169 3.312 5.253 4.643.734.316 1.307.505 1.753.647.737.234 1.407.201 1.937.122.59-.088 1.786-.73 2.037-1.434.25-.704.25-1.307.175-1.434-.075-.127-.281-.203-.582-.352z"/>
+              </svg>
+              <span>0823-8444-2202</span>
+            </a>
           </div>
         </aside>
 
