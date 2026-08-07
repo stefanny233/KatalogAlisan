@@ -4,6 +4,7 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
   const [activeSubCategory, setActiveSubCategory] = useState('Semua Tipe');
   const [selectedVariantMap, setSelectedVariantMap] = useState({});
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Reset subkategori ketika kategori aktif berubah (mencegah bug "0 produk ditemukan")
   useEffect(() => {
@@ -620,11 +621,42 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
         </div>
       </div>
 
+      {/* OVERLAY BACKDROP UNTUK SIDEBAR DI HP */}
+      <div 
+        className={`mobile-sidebar-backdrop ${isMobileSidebarOpen ? 'active' : ''}`} 
+        onClick={() => setIsMobileSidebarOpen(false)} 
+      />
+
+      {/* FLOATING TRIGGER BUTTON DI HP UNTUK BUKA SIDEBAR KIRI */}
+      <button 
+        type="button" 
+        className="mobile-sidebar-floating-btn"
+        onClick={() => setIsMobileSidebarOpen(true)}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/>
+        </svg>
+        <span>Kategori &amp; Menu</span>
+      </button>
+
       {/* MAIN DASHBOARD LAYOUT (SIDEBAR KIRI & VIEWPORT KANAN ALA SCREENSHOT ACUAN) */}
       <div className="dashboard-app-layout">
         
         {/* SIDEBAR VERTIKAL KIRI (DROPDOWN KATEGORI DI DALAM 'SEMUA PRODUK') */}
-        <aside className="app-vertical-sidebar">
+        <aside className={`app-vertical-sidebar ${isMobileSidebarOpen ? 'mobile-open' : ''}`}>
+          
+          {/* HEADER MOBILE CLOSE BUTTON */}
+          <div className="sidebar-mobile-header">
+            <span className="mobile-sidebar-title">Navigasi Katalog</span>
+            <button 
+              type="button" 
+              className="btn-close-mobile-sidebar"
+              onClick={() => setIsMobileSidebarOpen(false)}
+            >
+              &times;
+            </button>
+          </div>
+
           <div className="sidebar-section-label">Katalog Produk</div>
 
           <div className="sidebar-menu-list">
@@ -748,47 +780,6 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
             <>
               {/* 1. HERO SECTION UTAMA */}
               <section className="hero-section">
-                <div className="quick-selector-card">
-                  <div className="selector-header">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/>
-                    </svg>
-                    <h3>Pilih Kemasan Anda</h3>
-                  </div>
-                  <form onSubmit={handleQuickSearch} className="selector-form">
-                    <div className="selector-group">
-                      <label>Kategori Utama</label>
-                      <select 
-                        value={quickCategory} 
-                        onChange={(e) => { setQuickCategory(e.target.value); setQuickType('Semua Tipe'); }}
-                        className="selector-select"
-                      >
-                        <option value="Semua">Semua Kategori</option>
-                        {categories.map((cat) => (
-                          <option key={cat} value={cat}>{cat}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="selector-group">
-                      <label>Jenis / Sub-Kategori</label>
-                      <select 
-                        value={quickType} 
-                        onChange={(e) => setQuickType(e.target.value)}
-                        className="selector-select"
-                      >
-                        {getAllSubCategoriesForSelector().map((t, idx) => (
-                          <option key={idx} value={t}>{t}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <button type="submit" className="btn-selector-submit">Cari Kemasan</button>
-                  </form>
-                  <div className="selector-footer">
-                    <span>Butuh bantuan?</span>
-                    <a href="https://wa.me/6282384442202" target="_blank" rel="noopener noreferrer">Hubungi WA Kami</a>
-                  </div>
-                </div>
-
                 <div className="hero-banner-card">
                   <div className="banner-overlay"></div>
                   <div className="banner-content">
