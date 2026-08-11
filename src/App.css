@@ -2808,14 +2808,29 @@ body {
 
 .shopee-thumbnails-row {
   display: flex;
+  flex-wrap: nowrap;
   gap: 0.5rem;
   overflow-x: auto;
-  padding-bottom: 0.25rem;
+  padding: 0.35rem 0.15rem 0.5rem 0.15rem;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  width: 100%;
+}
+
+.shopee-thumbnails-row::-webkit-scrollbar {
+  height: 5px;
+}
+
+.shopee-thumbnails-row::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 
 .shopee-thumb-item {
-  width: 65px;
-  height: 65px;
+  width: 56px;
+  height: 56px;
   border-radius: 8px;
   overflow: hidden;
   border: 2px solid var(--border-color);

@@ -12,16 +12,36 @@ const DEFAULT_CATEGORIES = (dbData && dbData.categories) ? dbData.categories : [
 const DEFAULT_PRODUCTS = (dbData && dbData.products) ? dbData.products : [];
 
 function App() {
-  // State untuk data produk
+  // State untuk data produk (Instant 0ms Render 24 Produk)
   const [products, setProducts] = useState(() => {
     const saved = localStorage.getItem('alisan_products');
-    return saved ? JSON.parse(saved) : DEFAULT_PRODUCTS;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length >= 24) {
+          return parsed;
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+    return DEFAULT_PRODUCTS;
   });
 
   // State untuk daftar kategori dinamis
   const [categories, setCategories] = useState(() => {
     const saved = localStorage.getItem('alisan_categories');
-    return saved ? JSON.parse(saved) : DEFAULT_CATEGORIES;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length >= 9) {
+          return parsed;
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+    return DEFAULT_CATEGORIES;
   });
 
   // Tampilan halaman aktif ('catalog' atau 'admin')
@@ -33,15 +53,15 @@ function App() {
   // Input pencarian secara global di header
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Status autentikasi admin (menggunakan sessionStorage agar reset saat tab browser ditutup)
+  // Status autentikasi admin (persisted di localStorage & sessionStorage)
   const [isAdmin, setIsAdmin] = useState(() => {
-    return sessionStorage.getItem('alisan_is_admin') === 'true';
+    return localStorage.getItem('alisan_is_admin') === 'true' || sessionStorage.getItem('alisan_is_admin') === 'true';
   });
 
   // State untuk mengontrol buka/tutup Modal PIN
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
-  // 1. Fetch Data dari Supabase Database saat aplikasi dibuka
+  // 1. Fetch Data dari Supabase Database saat aplikasi dibuka (Optimized Instant Render)
   useEffect(() => {
     const loadSupabaseData = async () => {
       try {
@@ -53,8 +73,13 @@ function App() {
 
         if (!catErr && catData && catData.length > 0) {
           const catList = catData.map(c => c.name);
-          setCategories(catList);
-          localStorage.setItem('alisan_categories', JSON.stringify(catList));
+          const currentCatString = localStorage.getItem('alisan_categories');
+          const newCatString = JSON.stringify(catList);
+          
+          if (currentCatString !== newCatString) {
+            setCategories(catList);
+            localStorage.setItem('alisan_categories', newCatString);
+          }
         }
 
         // Fetch Products
@@ -76,10 +101,16 @@ function App() {
             extraImages: p.extra_images || p.extraImages || [],
             variants: p.variants || []
           }));
-          setProducts(formattedProducts);
-          localStorage.setItem('alisan_products', JSON.stringify(formattedProducts));
+
+          const currentProdString = localStorage.getItem('alisan_products');
+          const newProdString = JSON.stringify(formattedProducts);
+
+          if (currentProdString !== newProdString) {
+            setProducts(formattedProducts);
+            safeSaveToLocalStorage('alisan_products', formattedProducts);
+          }
         }
-        console.log('✓ Database Supabase Alisan Plastik Berhasil Terhubung!');
+        console.log('✓ Database Supabase Synchronized!');
       } catch (err) {
         console.warn('Mode offline/Gagal fetch Supabase, menggunakan data browser:', err);
       }
@@ -126,13 +157,34 @@ function App() {
     };
   }, []);
 
+  // Helper simpan localStorage yang aman dari QuotaExceededError
+  const safeSaveToLocalStorage = (key, data) => {
+    try {
+      localStorage.setItem(key, typeof data === 'string' ? data : JSON.stringify(data));
+    } catch (err) {
+      console.warn(`localStorage quota limit. Stripping heavy base64 strings for local cache.`);
+      try {
+        if (Array.isArray(data)) {
+          const lightProducts = data.map(p => ({
+            ...p,
+            imageUrl: p.imageUrl && p.imageUrl.startsWith('data:image') && p.imageUrl.length > 500 ? '' : p.imageUrl,
+            extraImages: (p.extraImages || []).filter(img => !img.startsWith('data:image')),
+            variants: (p.variants || []).map(v => ({
+              ...v,
+              imageUrl: v.imageUrl && v.imageUrl.startsWith('data:image') && v.imageUrl.length > 500 ? '' : v.imageUrl
+            }))
+          }));
+          localStorage.setItem(key, JSON.stringify(lightProducts));
+        }
+      } catch (e) {
+        console.warn('Unable to write to localStorage:', e);
+      }
+    }
+  };
+
   // Sync data produk ke localStorage
   useEffect(() => {
-    try {
-      localStorage.setItem('alisan_products', JSON.stringify(products));
-    } catch (err) {
-      console.warn('localStorage limit reached.', err);
-    }
+    safeSaveToLocalStorage('alisan_products', products);
   }, [products]);
 
   // Sync data kategori ke localStorage
@@ -308,6 +360,8 @@ function App() {
   // Handler Keluar / Mengunci kembali sesi Admin
   const handleLockAdmin = () => {
     setIsAdmin(false);
+    localStorage.removeItem('alisan_is_admin');
+    sessionStorage.removeItem('alisan_is_admin');
     setCurrentView('catalog');
   };
 
@@ -319,6 +373,8 @@ function App() {
   // Handler jika masukan PIN benar di Modal
   const handlePinSuccess = () => {
     setIsAdmin(true);
+    localStorage.setItem('alisan_is_admin', 'true');
+    sessionStorage.setItem('alisan_is_admin', 'true');
     setIsPinModalOpen(false);
     setCurrentView('admin');
   };
@@ -415,7 +471,7 @@ function App() {
             searchQuery={searchQuery}
           />
         ) : (
-          isAdmin && (
+          isAdmin ? (
             <AdminView 
               products={products}
               categories={categories}
@@ -426,7 +482,52 @@ function App() {
               onEditCategory={handleEditCategory}
               onDeleteCategory={handleDeleteCategory}
               onResetDefaults={handleResetDefaults}
+              onBackToCatalog={() => setCurrentView('catalog')}
             />
+          ) : (
+            <div className="admin-access-required" style={{ textAlign: 'center', padding: '4rem 1rem' }}>
+              <div style={{ background: '#ffffff', maxWidth: '450px', margin: '0 auto', padding: '2.5rem 2rem', borderRadius: '16px', border: '1.5px solid #cbd5e1', boxShadow: '0 10px 25px rgba(0,0,0,0.08)' }}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🔒</div>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>Akses Admin Terkunci</h3>
+                <p style={{ fontSize: '0.88rem', color: '#64748b', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                  Silakan masukkan Passcode Admin Alisan Plastik untuk membuka panel pengelola barang.
+                </p>
+                <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+                  <button
+                    type="button"
+                    onClick={handleUnlockAdminClick}
+                    style={{
+                      padding: '0.65rem 1.25rem',
+                      borderRadius: '10px',
+                      border: 'none',
+                      backgroundColor: '#0f172a',
+                      color: '#ffffff',
+                      fontWeight: 700,
+                      fontSize: '0.88rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Masukkan Passcode Admin
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentView('catalog')}
+                    style={{
+                      padding: '0.65rem 1.25rem',
+                      borderRadius: '10px',
+                      border: '1.5px solid #cbd5e1',
+                      backgroundColor: '#ffffff',
+                      color: '#0f172a',
+                      fontWeight: 700,
+                      fontSize: '0.88rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Kembali ke Katalog
+                  </button>
+                </div>
+              </div>
+            </div>
           )
         )}
       </main>

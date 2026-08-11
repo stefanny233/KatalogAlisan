@@ -1,6 +1,9 @@
 import { useState } from 'react';
 
-function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDeleteProduct, onAddCategory, onEditCategory, onDeleteCategory, onResetDefaults }) {
+function AdminView({ products = [], categories = [], onAddProduct, onUpdateProduct, onDeleteProduct, onAddCategory, onEditCategory, onDeleteCategory, onResetDefaults, onBackToCatalog }) {
+  const safeProducts = Array.isArray(products) ? products : [];
+  const safeCategories = Array.isArray(categories) ? categories : [];
+
   // Tab Admin Aktif ('list' = daftar barang, 'form' = tambah/edit produk, 'category' = kelola kategori)
   const [activeAdminTab, setActiveAdminTab] = useState('list');
 
@@ -9,7 +12,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
 
   // State Field Form Produk
   const [name, setName] = useState('');
-  const [category, setCategory] = useState(categories[0] || 'Thinwall');
+  const [category, setCategory] = useState(safeCategories[0] || 'Thinwall');
   const [subCategory, setSubCategory] = useState('Persegi Panjang');
   const [labelBadge, setLabelBadge] = useState('Tanpa Label');
   const [minOrder, setMinOrder] = useState('1 Pak (50 pcs)');
@@ -24,7 +27,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
 
   // State Varian Ukuran Opsional (Lengkap: Panjang, Lebar, Tinggi, Diameter, Vol ml, Oz, Foto Varian)
   const [variants, setVariants] = useState([
-    { size: '', price: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameterTop: '', diameterBottom: '', ml: '', oz: '', rawSize: '', imageUrl: '' }
+    { size: '', price: '', packUnitType: 'pack', priceDus: '', wholesaleUnitType: 'dus', pricePcs: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameterTop: '', diameterBottom: '', ml: '', oz: '', rawSize: '', imageUrl: '' }
   ]);
 
   // State Input Kategori Baru
@@ -37,11 +40,26 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
   const [adminCategoryFilter, setAdminCategoryFilter] = useState('Semua');
 
   // Total statistik produk
-  const totalProducts = products.length;
-  const outOfStockCount = products.reduce((acc, p) => {
-    const hasOut = p.variants && p.variants.some(v => !v.inStock);
+  const totalProducts = safeProducts.length;
+  const outOfStockCount = safeProducts.reduce((acc, p) => {
+    const hasOut = p && p.variants && p.variants.some(v => v && !v.inStock);
     return hasOut ? acc + 1 : acc;
   }, 0);
+
+  // Helper: Bypass CORS/hotlink block untuk gambar Instagram & media sosial
+  const resolveImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('data:image')) return url;
+    if (
+      url.includes('instagram.com') ||
+      url.includes('cdninstagram.com') ||
+      url.includes('fbcdn.net') ||
+      url.includes('scontent')
+    ) {
+      return `https://images.weserv.nl/?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+  };
 
   // Auto-fill sub-kategori default saat kategori utama diubah
   const handleCategoryChange = (e) => {
@@ -124,7 +142,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
 
   // Tambah baris varian ukuran
   const addVariantRow = () => {
-    setVariants([...variants, { size: '', price: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameterTop: '', diameterBottom: '', ml: '', oz: '', rawSize: '', imageUrl: '' }]);
+    setVariants([...variants, { size: '', price: '', packUnitType: 'pack', priceDus: '', wholesaleUnitType: 'dus', pricePcs: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameterTop: '', diameterBottom: '', ml: '', oz: '', rawSize: '', imageUrl: '' }]);
   };
 
   // Hapus baris varian
@@ -199,40 +217,27 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
       return v.size.trim();
     }
 
-    return parts.length > 0 ? parts.join(' / ') : 'Standar';
+    if (parts.length === 0) return 'Standar';
+    return parts.join(' | ');
   };
 
-  // Mulai Mode Edit Produk (otomatis buka Tab Form)
-  const handleStartEdit = (product) => {
+  // Buka Form Edit Produk
+  const handleEditClick = (product) => {
     setEditingProductId(product.id);
     setName(product.name || '');
-    setCategory(product.category || categories[0] || 'Thinwall');
+    setCategory(product.category || categories[0]);
     setSubCategory(product.subCategory || '');
     setLabelBadge(product.labelBadge || 'Tanpa Label');
     setMinOrder(product.minOrder || '1 Pak (50 pcs)');
     setDescription(product.description || '');
     setImageUrl(product.imageUrl || '');
-    setExtraImages(product.extraImages || []);
 
     setVariants(product.variants && product.variants.length > 0 
       ? product.variants.map(v => ({
-          variantName: v.variantName || '',
-          size: v.size || '',
-          rawSize: v.size || '',
-          price: v.price !== undefined ? v.price : '',
-          priceRoll: v.priceRoll || '',
-          priceDus: v.priceDus || '',
-          inStock: v.inStock !== undefined ? v.inStock : true,
-          panjang: v.panjang || '',
-          lebar: v.lebar || '',
-          tinggi: v.tinggi || '',
-          diameterTop: v.diameterTop || v.diameter || '',
-          diameterBottom: v.diameterBottom || '',
-          ml: v.ml || '',
-          oz: v.oz || '',
-          imageUrl: v.imageUrl || ''
+          ...v,
+          rawSize: v.size || ''
         }))
-      : [{ variantName: '', size: 'Standar', price: '', inStock: true, imageUrl: '' }]
+      : [{ size: '', price: '', packUnitType: 'pack', priceDus: '', wholesaleUnitType: 'dus', pricePcs: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameterTop: '', diameterBottom: '', ml: '', oz: '', rawSize: '', imageUrl: '' }]
     );
     
     setActiveAdminTab('form');
@@ -256,7 +261,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
     setDescription('');
     setImageUrl('');
     setExtraImages([]);
-    setVariants([{ size: '', price: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameterTop: '', diameterBottom: '', ml: '', oz: '', rawSize: '', imageUrl: '' }]);
+    setVariants([{ size: '', price: '', packUnitType: 'pack', priceDus: '', wholesaleUnitType: 'dus', pricePcs: '', inStock: true, panjang: '', lebar: '', tinggi: '', diameterTop: '', diameterBottom: '', ml: '', oz: '', rawSize: '', imageUrl: '' }]);
   };
 
   // Submit Simpan Kategori Baru
@@ -285,25 +290,13 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
     try {
       const processedVariants = variants.map(v => {
         const label = buildVariantLabel(v);
-        const parsedPrice = v.price !== '' && !isNaN(v.price) ? parseFloat(v.price) : 0;
-        const parsedPriceRoll = v.priceRoll !== '' && !isNaN(v.priceRoll) ? parseFloat(v.priceRoll) : null;
-        const parsedPriceDus = v.priceDus !== '' && !isNaN(v.priceDus) ? parseFloat(v.priceDus) : null;
+        
         return {
-          variantName: v.variantName ? v.variantName.trim() : '',
+          ...v,
           size: label,
-          price: parsedPrice,
-          priceRoll: parsedPriceRoll,
-          priceDus: parsedPriceDus,
-          inStock: v.inStock,
-          panjang: v.panjang,
-          lebar: v.lebar,
-          tinggi: v.tinggi,
-          diameterTop: v.diameterTop,
-          diameterBottom: v.diameterBottom,
-          diameter: v.diameterTop || v.diameter,
-          ml: v.ml,
-          oz: v.oz,
-          imageUrl: v.imageUrl
+          price: parseFloat(v.price) || 0,
+          priceDus: v.priceDus ? parseFloat(v.priceDus) : null,
+          pricePcs: v.pricePcs ? parseFloat(v.pricePcs) : null,
         };
       });
 
@@ -342,38 +335,27 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
   };
 
   const formatRupiah = (number) => {
-    return new Intl.NumberFormat('id-ID').format(number);
-  };
-
-  // Helper: Bypass CORS/hotlink block untuk gambar Instagram & media sosial
-  const resolveImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('data:image')) return url;
-    if (
-      url.includes('instagram.com') ||
-      url.includes('cdninstagram.com') ||
-      url.includes('fbcdn.net') ||
-      url.includes('scontent')
-    ) {
-      return `https://images.weserv.nl/?url=${encodeURIComponent(url)}`;
-    }
-    return url;
+    const val = parseFloat(number);
+    if (isNaN(val)) return '0';
+    return new Intl.NumberFormat('id-ID').format(val);
   };
 
   // List semua gambar produk yang sudah diupload untuk dropdown varian
   const allAvailableImages = [imageUrl, ...extraImages].filter(Boolean);
 
   // Filter daftar produk di admin
-  const filteredAdminProducts = products.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(adminSearch.toLowerCase()) ||
-                          p.subCategory.toLowerCase().includes(adminSearch.toLowerCase());
+  const filteredAdminProducts = safeProducts.filter(p => {
+    if (!p) return false;
+    const matchesSearch = (p.name || '').toLowerCase().includes(adminSearch.toLowerCase()) ||
+                          (p.category || '').toLowerCase().includes(adminSearch.toLowerCase()) ||
+                          (p.subCategory && p.subCategory.toLowerCase().includes(adminSearch.toLowerCase()));
     const matchesCat = adminCategoryFilter === 'Semua' || p.category === adminCategoryFilter;
     return matchesSearch && matchesCat;
   });
 
-  const handleExportDbJson = () => {
+  // Handler ekspor data ke JSON untuk db.json
+  const handleExportJSON = () => {
     const exportData = {
-      version: Date.now(),
       categories: categories,
       products: products
     };
@@ -392,6 +374,39 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
   return (
     <div className="admin-page-wrapper">
       
+      {/* TOMBOL KEMBALI KE KATALOG UTAMA */}
+      <div className="admin-back-btn-bar" style={{ marginBottom: '1rem' }}>
+        <button
+          type="button"
+          className="btn-back-to-catalog"
+          onClick={() => {
+            if (onBackToCatalog) {
+              onBackToCatalog();
+            }
+          }}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.6rem 1.2rem',
+            borderRadius: '10px',
+            border: '1.5px solid #d5b58c',
+            backgroundColor: '#0f172a',
+            color: '#ffffff',
+            fontWeight: 700,
+            fontSize: '0.88rem',
+            cursor: 'pointer',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>← Kembali ke Halaman Katalog Utama</span>
+        </button>
+      </div>
+
       {/* 1. HEADER & SUMMARY BAR */}
       <header className="admin-top-bar">
         <div>
@@ -417,7 +432,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
         </div>
         <div className="admin-stat-card secondary">
           <span className="stat-card-label">Total Kategori Utama</span>
-          <span className="stat-card-value">{categories.length} Kategori</span>
+          <span className="stat-card-value">{safeCategories.length} Kategori</span>
         </div>
         <div className="admin-stat-card alert">
           <span className="stat-card-label">Produk Ada Stok Kosong</span>
@@ -433,7 +448,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
           onClick={() => setActiveAdminTab('list')}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Daftar Semua Barang ({products.length})
+          Daftar Semua Barang ({safeProducts.length})
         </button>
 
         <button 
@@ -454,7 +469,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
           onClick={() => setActiveAdminTab('category')}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-          Kelola Kategori ({categories.length})
+          Kelola Kategori ({safeCategories.length})
         </button>
       </div>
 
@@ -485,7 +500,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
             </div>
 
             <div className="admin-cat-filter-wrap">
-              {['Semua', ...categories].map(cat => (
+              {['Semua', ...safeCategories].map(cat => (
                 <button 
                   key={cat}
                   type="button"
@@ -522,7 +537,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                       <img src={resolveImageUrl(product.imageUrl)} alt={product.name} />
                     ) : (
                       <div className="product-row-placeholder">
-                        {product.category[0]}
+                        {(product.category && product.category[0]) || 'P'}
                       </div>
                     )}
                   </div>
@@ -563,7 +578,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                     <button 
                       type="button"
                       className="btn-admin-edit"
-                      onClick={() => handleStartEdit(product)}
+                      onClick={() => handleEditClick(product)}
                     >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
                       Edit
@@ -949,7 +964,7 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                                 placeholder="Ø Bawah (cm)" 
                                 value={v.diameterBottom || ''}
                                 onChange={(e) => handleVariantChange(index, 'diameterBottom', e.target.value)}
-                              />
+                               />
                             </div>
 
                             <div className="v-field">
@@ -974,54 +989,65 @@ function AdminView({ products, categories, onAddProduct, onUpdateProduct, onDele
                           </div>
                         </div>
 
-                        {/* KELOMPOK 2: HARGA MULTI-SATUAN (2 KOLOM X 2 BARIS) */}
+                        {/* KELOMPOK 2: HARGA MULTI-SATUAN (GABUNGAN INPUT + DROPDOWN SATUAN) */}
                         <div className="variant-group-box highlight-price">
-                          <h4 className="group-box-title">💰 Kelompok Harga Multi-Satuan</h4>
-                          <div className="group-fields-grid price-grid-2x2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.85rem' }}>
-                            {/* BARIS 1: PACK & ROLL */}
+                          <h4 className="group-box-title">💰 Kelompok Harga Multi-Satuan (Digabung Praktis)</h4>
+                          <div className="group-fields-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.85rem' }}>
+                            
+                            {/* GABUNGAN 1: HARGA ECERAN (PACK / ROLL) */}
                             <div className="v-field">
-                              <label>Harga per Pack (Rp) <span className="req-star">*</span></label>
-                              <div className="price-input-wrapper">
-                                <span>Rp</span>
-                                <input 
-                                  type="number" 
-                                  placeholder="0" 
-                                  value={v.price}
-                                  onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
-                                  required
-                                />
+                              <label>1. Harga Eceran Kemasan <span className="req-star">*</span></label>
+                              <div className="price-combined-input" style={{ display: 'flex', gap: '0.35rem' }}>
+                                <div className="price-input-wrapper" style={{ flex: 1 }}>
+                                  <span>Rp</span>
+                                  <input 
+                                    type="number" 
+                                    placeholder="0" 
+                                    value={v.price}
+                                    onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
+                                    required
+                                  />
+                                </div>
+                                <select
+                                  value={v.packUnitType || 'pack'}
+                                  onChange={(e) => handleVariantChange(index, 'packUnitType', e.target.value)}
+                                  className="v-select-neat"
+                                  style={{ width: '110px', fontWeight: 700, padding: '0.4rem 0.5rem' }}
+                                >
+                                  <option value="pack">/ Pack</option>
+                                  <option value="roll">/ Roll</option>
+                                </select>
                               </div>
                             </div>
 
+                            {/* GABUNGAN 2: HARGA GROSIR BESAR (DUS / BAL) */}
                             <div className="v-field">
-                              <label>Harga per Roll (Rp) <span className="opt-tag">(Opsional)</span></label>
-                              <div className="price-input-wrapper">
-                                <span>Rp</span>
-                                <input 
-                                  type="number" 
-                                  placeholder="0" 
-                                  value={v.priceRoll || ''}
-                                  onChange={(e) => handleVariantChange(index, 'priceRoll', e.target.value)}
-                                />
+                              <label>2. Harga Grosir Besar <span className="opt-tag">(Opsional)</span></label>
+                              <div className="price-combined-input" style={{ display: 'flex', gap: '0.35rem' }}>
+                                <div className="price-input-wrapper" style={{ flex: 1 }}>
+                                  <span>Rp</span>
+                                  <input 
+                                    type="number" 
+                                    placeholder="0" 
+                                    value={v.priceDus || ''}
+                                    onChange={(e) => handleVariantChange(index, 'priceDus', e.target.value)}
+                                  />
+                                </div>
+                                <select
+                                  value={v.wholesaleUnitType || 'dus'}
+                                  onChange={(e) => handleVariantChange(index, 'wholesaleUnitType', e.target.value)}
+                                  className="v-select-neat"
+                                  style={{ width: '110px', fontWeight: 700, padding: '0.4rem 0.5rem' }}
+                                >
+                                  <option value="dus">/ Dus</option>
+                                  <option value="bal">/ Bal</option>
+                                </select>
                               </div>
                             </div>
 
-                            {/* BARIS 2: DUS / BAL & PCS */}
-                            <div className="v-field">
-                              <label>Harga per Dus / Bal (Rp) <span className="opt-tag">(Opsional)</span></label>
-                              <div className="price-input-wrapper">
-                                <span>Rp</span>
-                                <input 
-                                  type="number" 
-                                  placeholder="0" 
-                                  value={v.priceDus || ''}
-                                  onChange={(e) => handleVariantChange(index, 'priceDus', e.target.value)}
-                                />
-                              </div>
-                            </div>
-
-                            <div className="v-field">
-                              <label>Harga per Pcs (Rp) <span className="opt-tag">(Opsional)</span></label>
+                            {/* HARGA PER PCS */}
+                            <div className="v-field" style={{ gridColumn: '1 / -1' }}>
+                              <label>3. Harga per Pcs (Rp) <span className="opt-tag">(Opsional - Informasi Eceran)</span></label>
                               <div className="price-input-wrapper">
                                 <span>Rp</span>
                                 <input 

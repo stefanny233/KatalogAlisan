@@ -1,150 +1,381 @@
 {
-  "version": 2,
+  "version": 3,
   "categories": [
-    "Thinwall",
-    "Paper Bowl",
+    "Alat Makan",
     "Gelas Plastik",
-    "Paper Lunch"
+    "Mika",
+    "Paper Bowl",
+    "Paper Lunchbox",
+    "Plastik PE Klip",
+    "Sedotan",
+    "Sumpit & Tusukan",
+    "Thinwall"
   ],
   "products": [
     {
-      "id": 1,
-      "name": "Gelas Plastik Oval PP",
-      "category": "Gelas Plastik",
-      "subCategory": "PP Starindo",
+      "id": 101,
+      "name": "Thinwall Rectangular (Persegi Panjang)",
+      "category": "Thinwall",
+      "subCategory": "Persegi Panjang",
       "labelBadge": "Terlaris",
-      "minOrder": "1 Pak (50 pcs)",
-      "description": "Gelas plastik PP tebal model oval yang estetik. Sangat cocok untuk kopi susu, boba, dan jus.",
-      "imageUrl": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=500&auto=format&fit=crop&q=60",
+      "minOrder": "1 Pak (25 pcs)",
+      "description": "Kotak makan plastik thinwall persegi panjang tahan microwave & freezer. Tutup sangat rapat kedap udara anti tumpah.",
+      "imageUrl": "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
       "variants": [
-        {
-          "size": "12oz",
-          "price": 850,
-          "inStock": true
-        },
-        {
-          "size": "14oz",
-          "price": 900,
-          "inStock": true
-        },
-        {
-          "size": "16oz",
-          "price": 950,
-          "inStock": true
-        },
-        {
-          "size": "22oz",
-          "price": 1200,
-          "inStock": false
-        }
+        { "variantName": "500ml Small", "size": "P:17cm x L:12cm x T:4cm | 500 ml", "price": 1400, "packUnitType": "pack", "priceDus": 350000, "wholesaleUnitType": "dus", "pricePcs": 300, "inStock": true },
+        { "variantName": "650ml Medium", "size": "P:17cm x L:12cm x T:5.5cm | 650 ml", "price": 1550, "packUnitType": "pack", "priceDus": 380000, "wholesaleUnitType": "dus", "pricePcs": 350, "inStock": true },
+        { "variantName": "750ml Large", "size": "P:17cm x L:12cm x T:6.5cm | 750 ml", "price": 1700, "packUnitType": "pack", "priceDus": 410000, "wholesaleUnitType": "dus", "pricePcs": 400, "inStock": true },
+        { "variantName": "1000ml Jumbo", "size": "P:17cm x L:12cm x T:7.5cm | 1000 ml", "price": 2000, "packUnitType": "pack", "priceDus": 480000, "wholesaleUnitType": "dus", "pricePcs": 450, "inStock": true }
       ]
     },
     {
-      "id": 2,
+      "id": 102,
+      "name": "Thinwall Square (Persegi Kotak)",
+      "category": "Thinwall",
+      "subCategory": "Persegi Kotak",
+      "labelBadge": "Rekomendasi",
+      "minOrder": "1 Pak (25 pcs)",
+      "description": "Kotak thinwall bentuk bujursangkar persegi. Sangat pas untuk porsi nasi kotak, kue basah, dan dessert box.",
+      "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "350ml Square", "size": "P:12cm x L:12cm x T:5cm | 350 ml", "price": 1200, "packUnitType": "pack", "priceDus": 310000, "wholesaleUnitType": "dus", "pricePcs": 250, "inStock": true },
+        { "variantName": "500ml Square", "size": "P:12cm x L:12cm x T:6.5cm | 500 ml", "price": 1400, "packUnitType": "pack", "priceDus": 340000, "wholesaleUnitType": "dus", "pricePcs": 300, "inStock": true },
+        { "variantName": "1000ml Square", "size": "P:15cm x L:15cm x T:7.5cm | 1000 ml", "price": 1950, "packUnitType": "pack", "priceDus": 460000, "wholesaleUnitType": "dus", "pricePcs": 420, "inStock": true }
+      ]
+    },
+    {
+      "id": 103,
+      "name": "Thinwall Round Bowl Mangkuk Bulat",
+      "category": "Thinwall",
+      "subCategory": "Mangkuk Bulat",
+      "labelBadge": "Terlaris",
+      "minOrder": "1 Pak (25 pcs)",
+      "description": "Mangkok kuah thinwall bulat tahan panas. Sangat cocok untuk bakso, soto, ramen, es buah, dan bubur ayam.",
+      "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "200ml Round", "size": "Ø Atas 10cm / Bawah 7cm | 200 ml", "price": 950, "packUnitType": "pack", "priceDus": 240000, "wholesaleUnitType": "dus", "pricePcs": 200, "inStock": true },
+        { "variantName": "400ml Round", "size": "Ø Atas 11.5cm / Bawah 8cm | 400 ml", "price": 1300, "packUnitType": "pack", "priceDus": 320000, "wholesaleUnitType": "dus", "pricePcs": 280, "inStock": true },
+        { "variantName": "650ml Round", "size": "Ø Atas 14cm / Bawah 10cm | 650 ml", "price": 1650, "packUnitType": "pack", "priceDus": 390000, "wholesaleUnitType": "dus", "pricePcs": 360, "inStock": true },
+        { "variantName": "1000ml Round", "size": "Ø Atas 17cm / Bawah 12cm | 1000 ml", "price": 2100, "packUnitType": "pack", "priceDus": 490000, "wholesaleUnitType": "dus", "pricePcs": 450, "inStock": true }
+      ]
+    },
+    {
+      "id": 104,
+      "name": "Thinwall Bento Box 4 Sekat KLIP",
+      "category": "Thinwall",
+      "subCategory": "Bento Sekat",
+      "labelBadge": "Baru",
+      "minOrder": "1 Pak (25 pcs)",
+      "description": "Bento box thinwall sekat 4 dengan kunci klip snap ekstra kuat. Lauk pauk tidak akan bercampur.",
+      "imageUrl": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Bento Sekat 4 Bening", "size": "P:23cm x L:17cm x T:4cm | 4 Sekat", "price": 2400, "packUnitType": "pack", "priceDus": 560000, "wholesaleUnitType": "dus", "pricePcs": 550, "inStock": true },
+        { "variantName": "Bento Sekat 4 Hitam Premium", "size": "P:23cm x L:17cm x T:4cm | 4 Sekat Hitam", "price": 2600, "packUnitType": "pack", "priceDus": 590000, "wholesaleUnitType": "dus", "pricePcs": 600, "inStock": true }
+      ]
+    },
+    {
+      "id": 105,
+      "name": "Gelas Plastik Oval PP Starindo",
+      "category": "Gelas Plastik",
+      "subCategory": "PP Starindo",
+      "labelBadge": "Terlaris",
+      "minOrder": "1 Roll (50 pcs)",
+      "description": "Gelas plastik PP tebal model bawah oval melengkung estetik. Ideal untuk minuman kekinian Boba, Thai Tea, dan Kopi Susu.",
+      "imageUrl": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "12 oz Oval", "size": "Ø Atas 9.3cm / Bawah 5.5cm | 360 ml | 12 oz", "price": 14500, "packUnitType": "roll", "priceDus": 280000, "wholesaleUnitType": "dus", "pricePcs": 300, "inStock": true },
+        { "variantName": "14 oz Oval", "size": "Ø Atas 9.3cm / Bawah 5.5cm | 420 ml | 14 oz", "price": 16000, "packUnitType": "roll", "priceDus": 310000, "wholesaleUnitType": "dus", "pricePcs": 330, "inStock": true },
+        { "variantName": "16 oz Oval", "size": "Ø Atas 9.3cm / Bawah 5.5cm | 480 ml | 16 oz", "price": 17500, "packUnitType": "roll", "priceDus": 340000, "wholesaleUnitType": "dus", "pricePcs": 360, "inStock": true },
+        { "variantName": "22 oz Oval Jumbo", "size": "Ø Atas 9.3cm / Bawah 5.5cm | 660 ml | 22 oz", "price": 22000, "packUnitType": "roll", "priceDus": 420000, "wholesaleUnitType": "dus", "pricePcs": 450, "inStock": true }
+      ]
+    },
+    {
+      "id": 106,
       "name": "Gelas Plastik Datar PET Premium",
       "category": "Gelas Plastik",
       "subCategory": "PET Premium",
       "labelBadge": "Rekomendasi",
-      "minOrder": "1 Pak (50 pcs)",
-      "description": "Gelas plastik PET bening super jernih, kaku, dan terlihat mewah. Biasa digunakan oleh cafe-cafe besar.",
+      "minOrder": "1 Roll (50 pcs)",
+      "description": "Gelas plastik berbahan PET kristal sangat jernih dan kokoh kaku. Memberikan kesan mewah cafe kelas atas.",
       "imageUrl": "https://images.unsplash.com/photo-1517256064527-09c53b2d0bc6?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
       "variants": [
-        {
-          "size": "12oz",
-          "price": 1100,
-          "inStock": true
-        },
-        {
-          "size": "16oz",
-          "price": 1300,
-          "inStock": true
-        },
-        {
-          "size": "22oz",
-          "price": 1600,
-          "inStock": true
-        }
+        { "variantName": "12 oz PET Flat", "size": "Ø Atas 9.2cm | 360 ml | 12 oz", "price": 22000, "packUnitType": "roll", "priceDus": 430000, "wholesaleUnitType": "dus", "pricePcs": 450, "inStock": true },
+        { "variantName": "16 oz PET Flat", "size": "Ø Atas 9.2cm | 480 ml | 16 oz", "price": 25000, "packUnitType": "roll", "priceDus": 490000, "wholesaleUnitType": "dus", "pricePcs": 520, "inStock": true },
+        { "variantName": "22 oz PET Flat", "size": "Ø Atas 9.2cm | 660 ml | 22 oz", "price": 31000, "packUnitType": "roll", "priceDus": 600000, "wholesaleUnitType": "dus", "pricePcs": 650, "inStock": true }
       ]
     },
     {
-      "id": 3,
-      "name": "Thinwall Rectangular (Persegi Panjang)",
-      "category": "Thinwall",
-      "subCategory": "Tutup Rapat",
-      "labelBadge": "Promo",
-      "minOrder": "1 Dus (500 pcs)",
-      "description": "Kotak makan plastik persegi panjang. Tahan microwave, aman untuk freezer, dan kedap udara.",
-      "imageUrl": "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&auto=format&fit=crop&q=60",
-      "variants": [
-        {
-          "size": "500ml",
-          "price": 1400,
-          "inStock": true
-        },
-        {
-          "size": "650ml",
-          "price": 1500,
-          "inStock": true
-        },
-        {
-          "size": "750ml",
-          "price": 1650,
-          "inStock": true
-        },
-        {
-          "size": "1000ml",
-          "price": 2000,
-          "inStock": false
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "name": "Paper Bowl Polos + Tutup",
-      "category": "Paper Bowl",
-      "subCategory": "Polos Putih",
+      "id": 107,
+      "name": "Gelas Plastik Injection Boba Heavy Duty",
+      "category": "Gelas Plastik",
+      "subCategory": "Injection Thick",
       "labelBadge": "Baru",
       "minOrder": "1 Pak (25 pcs)",
-      "description": "Mangkok kertas tebal dengan lapisan laminasi anti bocor, tahan panas untuk makanan berkuah.",
-      "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?w=500&auto=format&fit=crop&q=60",
+      "description": "Cup Injection ekstra tebal kokoh dilengkapi tutup Stopper Heart Love. Tahan panas & dingin.",
+      "imageUrl": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
       "variants": [
-        {
-          "size": "500ml",
-          "price": 1500,
-          "inStock": true
-        },
-        {
-          "size": "650ml",
-          "price": 1700,
-          "inStock": true
-        },
-        {
-          "size": "800ml",
-          "price": 1900,
-          "inStock": true
-        }
+        { "variantName": "500ml Injection Cup", "size": "Ø Atas 9cm | 500 ml", "price": 1850, "packUnitType": "pack", "priceDus": 420000, "wholesaleUnitType": "dus", "pricePcs": 800, "inStock": true },
+        { "variantName": "700ml Injection Cup", "size": "Ø Atas 9cm | 700 ml", "price": 2200, "packUnitType": "pack", "priceDus": 510000, "wholesaleUnitType": "dus", "pricePcs": 950, "inStock": true }
       ]
     },
     {
-      "id": 5,
-      "name": "Paper Lunch Box Craft Eco",
-      "category": "Paper Lunch",
-      "subCategory": "Laminasi Anti Minyak",
+      "id": 108,
+      "name": "Paper Bowl Polos Putih + Tutup Bening",
+      "category": "Paper Bowl",
+      "subCategory": "Polos Putih",
+      "labelBadge": "Terlaris",
+      "minOrder": "1 Pak (25 pcs)",
+      "description": "Mangkok kertas food grade anti bocor lengkap dengan tutup transparan rapat. Ideal untuk rice bowl & soup.",
+      "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "500ml Paper Bowl", "size": "Ø Atas 11cm / Bawah 9cm | 500 ml", "price": 1450, "packUnitType": "pack", "priceDus": 350000, "wholesaleUnitType": "dus", "pricePcs": 350, "inStock": true },
+        { "variantName": "650ml Paper Bowl", "size": "Ø Atas 13cm / Bawah 10.5cm | 650 ml", "price": 1700, "packUnitType": "pack", "priceDus": 410000, "wholesaleUnitType": "dus", "pricePcs": 400, "inStock": true },
+        { "variantName": "800ml Paper Bowl", "size": "Ø Atas 14cm / Bawah 11cm | 800 ml", "price": 1950, "packUnitType": "pack", "priceDus": 470000, "wholesaleUnitType": "dus", "pricePcs": 450, "inStock": true }
+      ]
+    },
+    {
+      "id": 109,
+      "name": "Paper Bowl Brown Kraft Eco Friendly",
+      "category": "Paper Bowl",
+      "subCategory": "Kraft Cokelat",
+      "labelBadge": "Rekomendasi",
+      "minOrder": "1 Pak (25 pcs)",
+      "description": "Mangkok kertas warna cokelat kraft alami estetik eco-friendly dengan lapisan PE food grade anti rembes.",
+      "imageUrl": "https://images.unsplash.com/photo-1585238342024-78d387f4a707?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "500ml Kraft Bowl", "size": "Ø Atas 11cm / Bawah 9cm | 500 ml", "price": 1600, "packUnitType": "pack", "priceDus": 380000, "wholesaleUnitType": "dus", "pricePcs": 400, "inStock": true },
+        { "variantName": "750ml Kraft Bowl", "size": "Ø Atas 14cm / Bawah 11cm | 750 ml", "price": 1900, "packUnitType": "pack", "priceDus": 450000, "wholesaleUnitType": "dus", "pricePcs": 480, "inStock": true }
+      ]
+    },
+    {
+      "id": 110,
+      "name": "Paper Lunchbox Cokelat Kraft (Anti Minyak)",
+      "category": "Paper Lunchbox",
+      "subCategory": "Kraft Cokelat",
+      "labelBadge": "Terlaris",
+      "minOrder": "1 Pak (50 pcs)",
+      "description": "Box makan kertas kraft ramah lingkungan. Dilengkapi lapisan anti minyak dan sistem kunci kancing lipat rapat.",
+      "imageUrl": "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Size M Kraft", "size": "P:16cm x L:9cm x T:5cm | Medium 750ml", "price": 1250, "packUnitType": "pack", "priceDus": 310000, "wholesaleUnitType": "dus", "pricePcs": 280, "inStock": true },
+        { "variantName": "Size L Kraft", "size": "P:18cm x L:11cm x T:5cm | Large 1000ml", "price": 1450, "packUnitType": "pack", "priceDus": 360000, "wholesaleUnitType": "dus", "pricePcs": 330, "inStock": true }
+      ]
+    },
+    {
+      "id": 111,
+      "name": "Paper Lunchbox Putih Polos Medium & Large",
+      "category": "Paper Lunchbox",
+      "subCategory": "Putih Polos",
+      "labelBadge": "Promo",
+      "minOrder": "1 Pak (50 pcs)",
+      "description": "Lunchbox kertas putih bersih bersertifikat Food Grade. Praktis tinggal rakit & siap pakai untuk katering.",
+      "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Medium Putih", "size": "P:16cm x L:9cm x T:5cm", "price": 1200, "packUnitType": "pack", "priceDus": 290000, "wholesaleUnitType": "dus", "pricePcs": 260, "inStock": true },
+        { "variantName": "Large Putih", "size": "P:18cm x L:11cm x T:5cm", "price": 1400, "packUnitType": "pack", "priceDus": 340000, "wholesaleUnitType": "dus", "pricePcs": 310, "inStock": true }
+      ]
+    },
+    {
+      "id": 112,
+      "name": "Mika Brownies Bening S / M / L",
+      "category": "Mika",
+      "subCategory": "Mika Brownies",
+      "labelBadge": "Terlaris",
+      "minOrder": "1 Pak (50 pcs)",
+      "description": "Wadah mika bening bening untuk kue brownies, bolu gulung, tart, dan jajanan pasar.",
+      "imageUrl": "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Brownies Small (S)", "size": "P:16cm x L:11cm x T:5.5cm", "price": 900, "packUnitType": "pack", "priceDus": 220000, "wholesaleUnitType": "dus", "pricePcs": 200, "inStock": true },
+        { "variantName": "Brownies Medium (M)", "size": "P:22cm x L:11cm x T:5.5cm", "price": 1200, "packUnitType": "pack", "priceDus": 280000, "wholesaleUnitType": "dus", "pricePcs": 260, "inStock": true },
+        { "variantName": "Brownies Large (L)", "size": "P:30cm x L:11cm x T:5.5cm", "price": 1600, "packUnitType": "pack", "priceDus": 380000, "wholesaleUnitType": "dus", "pricePcs": 350, "inStock": true }
+      ]
+    },
+    {
+      "id": 113,
+      "name": "Mika Bento Sekat 4 Hitam Premium",
+      "category": "Mika",
+      "subCategory": "Mika Bento",
       "labelBadge": "Rekomendasi",
       "minOrder": "1 Pak (50 pcs)",
-      "description": "Kotak makan paper lunch box bahan cokelat kraft ramah lingkungan dengan lapisan laminasi food-grade anti bocor dan anti minyak.",
-      "imageUrl": "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&auto=format&fit=crop&q=60",
+      "description": "Tray mika alas hitam sekat 4 dengan tutup bening cembung anti embun. Cocok untuk paket nasi bento katering.",
+      "imageUrl": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
       "variants": [
-        {
-          "size": "M (750ml)",
-          "price": 1200,
-          "inStock": true
-        },
-        {
-          "size": "L (1000ml)",
-          "price": 1400,
-          "inStock": true
-        }
+        { "variantName": "Bento Sekat 4 Hitam", "size": "P:23cm x L:17cm x T:4cm | Sekat 4", "price": 1750, "packUnitType": "pack", "priceDus": 420000, "wholesaleUnitType": "dus", "pricePcs": 400, "inStock": true }
+      ]
+    },
+    {
+      "id": 114,
+      "name": "Mika Bolu & Kue Round Bening",
+      "category": "Mika",
+      "subCategory": "Mika Kue Bulat",
+      "labelBadge": "Baru",
+      "minOrder": "1 Pak (25 pcs)",
+      "description": "Mika bulat cembung bening transparan untuk kue tart, bolu panggang, dan pudding ulang tahun.",
+      "imageUrl": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Mika Bolu 18cm", "size": "Ø Atas 18cm x T:8cm", "price": 2500, "packUnitType": "pack", "priceBal": 320000, "wholesaleUnitType": "bal", "pricePcs": 550, "inStock": true },
+        { "variantName": "Mika Bolu 22cm", "size": "Ø Atas 22cm x T:9cm", "price": 3200, "packUnitType": "pack", "priceBal": 410000, "wholesaleUnitType": "bal", "pricePcs": 700, "inStock": true }
+      ]
+    },
+    {
+      "id": 115,
+      "name": "Plastik PE Klip Bening Tebal All Size",
+      "category": "Plastik PE Klip",
+      "subCategory": "Klip Ziplock Bening",
+      "labelBadge": "Terlaris",
+      "minOrder": "1 Pak (100 pcs)",
+      "description": "Kantong plastik klip ziplock elastis elastis tebal tidak mudah robek. Kedap udara untuk snack, bumbu, obat, & aksesoris.",
+      "imageUrl": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Klip 4x6 cm Mini", "size": "4cm x 6cm | Tebal 0.4mm", "price": 4500, "packUnitType": "pack", "priceBal": 210000, "wholesaleUnitType": "bal", "pricePcs": 50, "inStock": true },
+        { "variantName": "Klip 7x10 cm", "size": "7cm x 10cm | Tebal 0.4mm", "price": 8500, "packUnitType": "pack", "priceBal": 390000, "wholesaleUnitType": "bal", "pricePcs": 90, "inStock": true },
+        { "variantName": "Klip 10x15 cm Medium", "size": "10cm x 15cm | Tebal 0.4mm", "price": 14000, "packUnitType": "pack", "priceBal": 650000, "wholesaleUnitType": "bal", "pricePcs": 150, "inStock": true },
+        { "variantName": "Klip 20x30 cm Large", "size": "20cm x 30cm | Tebal 0.5mm", "price": 32000, "packUnitType": "pack", "priceBal": 1400000, "wholesaleUnitType": "bal", "pricePcs": 350, "inStock": true }
+      ]
+    },
+    {
+      "id": 116,
+      "name": "Plastik PE Klip Berwarna Gagang Handle",
+      "category": "Plastik PE Klip",
+      "subCategory": "Klip Handle Gagang",
+      "labelBadge": "Rekomendasi",
+      "minOrder": "1 Pak (50 pcs)",
+      "description": "Kantong klip ziplock dengan lubang pegangan tangan (handle). Sangat cocok untuk toko baju, kosmetik, & laundry.",
+      "imageUrl": "https://images.unsplash.com/photo-1597484661643-2f5fef640dd1?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Handle 20x30 cm", "size": "20cm x 30cm + Gagang", "price": 24000, "packUnitType": "pack", "priceBal": 950000, "wholesaleUnitType": "bal", "pricePcs": 500, "inStock": true },
+        { "variantName": "Handle 25x35 cm", "size": "25cm x 35cm + Gagang", "price": 31000, "packUnitType": "pack", "priceBal": 1200000, "wholesaleUnitType": "bal", "pricePcs": 650, "inStock": true }
+      ]
+    },
+    {
+      "id": 117,
+      "name": "Sedotan Steril Bungkus Kertas (Sterile Straw)",
+      "category": "Sedotan",
+      "subCategory": "Sedotan Steril",
+      "labelBadge": "Terlaris",
+      "minOrder": "1 Pak (500 pcs)",
+      "description": "Sedotan plastik lurus higienis dibungkus kertas per pcs. Dijamin bersih steril untuk cafe & restoran.",
+      "imageUrl": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Sedotan Steril 6mm Hitam", "size": "Panjang 20cm | Diameter 6mm", "price": 18000, "packUnitType": "pack", "priceDus": 340000, "wholesaleUnitType": "dus", "pricePcs": 40, "inStock": true },
+        { "variantName": "Sedotan Steril 6mm Bening", "size": "Panjang 20cm | Diameter 6mm", "price": 18000, "packUnitType": "pack", "priceDus": 340000, "wholesaleUnitType": "dus", "pricePcs": 40, "inStock": true }
+      ]
+    },
+    {
+      "id": 118,
+      "name": "Sedotan Boba Ujung Runcing 12mm",
+      "category": "Sedotan",
+      "subCategory": "Sedotan Boba",
+      "labelBadge": "Rekomendasi",
+      "minOrder": "1 Pak (100 pcs)",
+      "description": "Sedotan lubang besar diameter 12mm khusus topping Boba, Cincau, & Jelly. Ujung tajam rumpul mudah menembus seal cup.",
+      "imageUrl": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Sedotan Boba 12mm Steril", "size": "Panjang 21cm | Diameter 12mm Runcing", "price": 14000, "packUnitType": "pack", "priceDus": 270000, "wholesaleUnitType": "dus", "pricePcs": 150, "inStock": true }
+      ]
+    },
+    {
+      "id": 119,
+      "name": "Sedotan Tekuk Flexible Colorful",
+      "category": "Sedotan",
+      "subCategory": "Sedotan Flexi",
+      "labelBadge": "Promo",
+      "minOrder": "1 Pak (100 pcs)",
+      "description": "Sedotan fleksibel yang bisa ditekuk lehernya. Warna-warni cerah disukai anak-anak dan es buah.",
+      "imageUrl": "https://images.unsplash.com/photo-1517256064527-09c53b2d0bc6?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Flexi Straw Color", "size": "Panjang 24cm | Leher Tekuk", "price": 6500, "packUnitType": "pack", "priceDus": 120000, "wholesaleUnitType": "dus", "pricePcs": 70, "inStock": true }
+      ]
+    },
+    {
+      "id": 120,
+      "name": "Sumpit Bambu Steril Bungkus Plastik",
+      "category": "Sumpit & Tusukan",
+      "subCategory": "Sumpit Bambu",
+      "labelBadge": "Terlaris",
+      "minOrder": "1 Pak (100 pasang)",
+      "description": "Sumpit bambu halus tanpa serat kasar, dibungkus plastik steril per pasang. Sangat cocok untuk mi ayam, bakso, & ramen.",
+      "imageUrl": "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Sumpit Bambu Steril OPP", "size": "Panjang 20cm | Halus Tanpa Serat", "price": 12500, "packUnitType": "pack", "priceBal": 460000, "wholesaleUnitType": "bal", "pricePcs": 130, "inStock": true }
+      ]
+    },
+    {
+      "id": 121,
+      "name": "Tusuk Sate & Tusuk Gigi Hygienic",
+      "category": "Sumpit & Tusukan",
+      "subCategory": "Tusuk Sate & Gigi",
+      "labelBadge": "Baru",
+      "minOrder": "1 Pak (500 gram)",
+      "description": "Tusuk sate bambu kokoh tidak gampang patah dan tusuk gigi steril higienis dispenser container.",
+      "imageUrl": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Tusuk Sate Ayam 20cm", "size": "Panjang 20cm | Berat 500 gram", "price": 13000, "packUnitType": "pack", "priceBal": 490000, "wholesaleUnitType": "bal", "pricePcs": 30, "inStock": true },
+        { "variantName": "Tusuk Gigi Steril Botol", "size": "Isi 300 pcs | Botol Plastik", "price": 4500, "packUnitType": "pack", "priceBal": 160000, "wholesaleUnitType": "bal", "pricePcs": 15, "inStock": true }
+      ]
+    },
+    {
+      "id": 122,
+      "name": "Sendok Plastik Bening Food Grade",
+      "category": "Alat Makan",
+      "subCategory": "Sendok Plastik",
+      "labelBadge": "Terlaris",
+      "minOrder": "1 Pak (100 pcs)",
+      "description": "Sendok makan plastik bening transparan tebal kaku tanpa bau. Bersertifikat Food Grade aman untuk makanan panas.",
+      "imageUrl": "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Sendok Bening Super", "size": "Panjang 16cm | Bening Kaku", "price": 11500, "packUnitType": "pack", "priceDus": 220000, "wholesaleUnitType": "dus", "pricePcs": 120, "inStock": true },
+        { "variantName": "Sendok Hitam Premium", "size": "Panjang 16cm | Hitam Kaku", "price": 13000, "packUnitType": "pack", "priceDus": 250000, "wholesaleUnitType": "dus", "pricePcs": 135, "inStock": true }
+      ]
+    },
+    {
+      "id": 123,
+      "name": "Garpu Plastik Bening Food Grade",
+      "category": "Alat Makan",
+      "subCategory": "Garpu Plastik",
+      "labelBadge": "Rekomendasi",
+      "minOrder": "1 Pak (100 pcs)",
+      "description": "Garpu makan plastik bening dengan gerigi tajam pas untuk mi goreng, spageti, dan salad buah.",
+      "imageUrl": "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Garpu Bening Super", "size": "Panjang 16cm | Bening Kaku", "price": 11500, "packUnitType": "pack", "priceDus": 220000, "wholesaleUnitType": "dus", "pricePcs": 120, "inStock": true }
+      ]
+    },
+    {
+      "id": 124,
+      "name": "Sendok Bebek Soup Plastik Putih/Bening",
+      "category": "Alat Makan",
+      "subCategory": "Sendok Bebek Kuah",
+      "labelBadge": "Baru",
+      "minOrder": "1 Pak (100 pcs)",
+      "description": "Sendok bebek kuah cekung dalam untuk sup, soto, ramen, bubur, dan es campur.",
+      "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?w=500&auto=format&fit=crop&q=60",
+      "extraImages": [],
+      "variants": [
+        { "variantName": "Sendok Bebek Putih Foodgrade", "size": "Cekungan Dalam 4cm", "price": 9500, "packUnitType": "pack", "priceDus": 180000, "wholesaleUnitType": "dus", "pricePcs": 100, "inStock": true }
       ]
     }
   ]

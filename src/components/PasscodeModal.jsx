@@ -11,12 +11,12 @@ function PasscodeModal({ isOpen, onClose, onSuccess }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (pin === CORRECT_PIN) {
+    if (pin.trim().toLowerCase() === CORRECT_PIN.toLowerCase()) {
       setError('');
       setPin('');
       onSuccess(); // Panggil fungsi sukses jika PIN benar
     } else {
-      setError('PIN Admin salah! Silakan coba lagi.');
+      setError('PIN Admin salah! Silakan coba lagi (Gunakan "alisanadmin").');
       setPin('');
     }
   };

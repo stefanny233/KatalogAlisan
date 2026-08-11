@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function CatalogView({ products, categories = [], activeCategory, setActiveCategory, searchQuery }) {
+function CatalogView({ products, categories = [], activeCategory, setActiveCategory, searchQuery, onResetSearch }) {
   const [activeSubCategory, setActiveSubCategory] = useState('Semua Tipe');
   const [selectedVariantMap, setSelectedVariantMap] = useState({});
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
@@ -18,10 +18,33 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
   const [quickCategory, setQuickCategory] = useState('Semua');
   const [quickType, setQuickType] = useState('Semua Tipe');
 
-  // State untuk modal detail produk Shopee-style
+  // State untuk modal detail produk Shopee-style & Pilihan Dropdown Satuan
   const [detailProduct, setDetailProduct] = useState(null);
   const [detailVariantIdx, setDetailVariantIdx] = useState(0);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [selectedPackUnit, setSelectedPackUnit] = useState('pack');
+  const [selectedWholesaleUnit, setSelectedWholesaleUnit] = useState('none');
+
+  useEffect(() => {
+    setSelectedPackUnit('pack');
+    setSelectedWholesaleUnit('none');
+  }, [detailProduct, detailVariantIdx]);
+
+  // Intercept Device / Browser Back Button saat Modal Detail Terbuka (Mencegah ke Chrome Home)
+  useEffect(() => {
+    if (detailProduct) {
+      window.history.pushState({ modalOpen: true }, '');
+    }
+
+    const handleModalPopState = () => {
+      if (detailProduct) {
+        setDetailProduct(null);
+      }
+    };
+
+    window.addEventListener('popstate', handleModalPopState);
+    return () => window.removeEventListener('popstate', handleModalPopState);
+  }, [detailProduct]);
 
   const formatRupiah = (number) => {
     const val = parseFloat(number);
@@ -276,12 +299,25 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
   const detailActiveVariant = detailProduct?.variants?.[detailVariantIdx] || detailProduct?.variants?.[0];
 
   // Helper membuat URL WhatsApp dengan template chat profesional & rapi
-  const buildWhatsAppUrl = (product, variant) => {
+  const buildWhatsAppUrl = (product, variant, packUnit = 'pack', wholesaleUnit = 'none') => {
     if (!product || !variant) return 'https://wa.me/6282384442202';
     
-    const pricePack = `Rp ${formatRupiah(variant.price || 0)} / pack`;
-    const priceRollStr = variant.priceRoll ? `\n• *Harga Roll*: Rp ${formatRupiah(variant.priceRoll)}` : '';
-    const priceDusStr = variant.priceDus ? `\n• *Harga Dus/Bal*: Rp ${formatRupiah(variant.priceDus)}` : '';
+    let mainPriceText = `Rp ${formatRupiah(variant.price || 0)} / pack`;
+    let selectedUnitLabel = 'Pack';
+    
+    if (wholesaleUnit === 'dus' && variant.priceDus) {
+      mainPriceText = `Rp ${formatRupiah(variant.priceDus)} / dus`;
+      selectedUnitLabel = 'Dus';
+    } else if (wholesaleUnit === 'bal' && (variant.priceBal || variant.priceDus)) {
+      const balPrice = variant.priceBal || variant.priceDus;
+      mainPriceText = `Rp ${formatRupiah(balPrice)} / bal`;
+      selectedUnitLabel = 'Bal';
+    } else if (packUnit === 'roll' && variant.priceRoll) {
+      mainPriceText = `Rp ${formatRupiah(variant.priceRoll)} / roll`;
+      selectedUnitLabel = 'Roll';
+    }
+
+    const pcsStr = variant.pricePcs ? `\n• *Informasi Harga per Pcs*: Rp ${formatRupiah(variant.pricePcs)} / pcs` : '';
     const specificProdName = variant.variantName ? `${product.name} (${variant.variantName})` : product.name;
 
     const text = `Halo Admin ALISAN PLASTIK! 👋
@@ -292,7 +328,7 @@ Saya berminat untuk memesan produk dari Katalog Web berikut:
 • *Nama Produk*: ${specificProdName}
 • *Kategori*: ${product.category} (${product.subCategory || 'Umum'})
 • *Ukuran / Dimensi*: ${variant.size || 'Standar'}
-• *Harga*: ${pricePack}${priceRollStr}${priceDusStr}
+• *Satuan & Harga Dipilih*: ${selectedUnitLabel} (${mainPriceText})${pcsStr}
 • *Min. Pemesanan*: ${product.minOrder || '1 Pak'}
 
 📍 *LOKASI TOKO ALISAN PLASTIK:*
@@ -376,12 +412,40 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
         <div className="detail-modal-overlay" onClick={closeDetail}>
           <div className="detail-modal-card shopee-style-card" onClick={(e) => e.stopPropagation()}>
 
-            {/* Tombol Tutup */}
-            <button className="detail-modal-close" onClick={closeDetail} aria-label="Tutup">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
+            {/* Header Modal Detail Dengan Tombol Kembali & Close */}
+            <div className="shopee-modal-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.65rem 1rem', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}>
+              <button
+                type="button"
+                className="detail-modal-back-btn"
+                onClick={closeDetail}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  padding: '0.4rem 0.85rem',
+                  borderRadius: '8px',
+                  border: '1.5px solid #cbd5e1',
+                  backgroundColor: '#ffffff',
+                  color: '#0f172a',
+                  fontWeight: 700,
+                  fontSize: '0.84rem',
+                  cursor: 'pointer'
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Kembali</span>
+              </button>
+
+              <span style={{ fontWeight: 700, fontSize: '0.9rem', color: '#0f172a' }}>Detail Produk</span>
+
+              <button className="detail-modal-close" onClick={closeDetail} aria-label="Tutup" style={{ position: 'static', background: 'none', border: 'none', cursor: 'pointer' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
 
             <div className="detail-modal-body">
               
@@ -497,44 +561,114 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                   </div>
                 )}
 
-                {/* HARGA MULTI-SATUAN UTAMA (DIPINDAHKAN KE ATAS DESKRIPSI) */}
-                {detailActiveVariant && (
-                  <div className="detail-price-box">
-                    <span className="detail-price-label">
-                      {detailActiveVariant.inStock ? 'Harga Satuan Utama' : 'Stok Sedang Kosong'}
-                    </span>
-                    <div className="detail-price-value">
-                      <span className="detail-price-rp">Rp</span>
-                      {formatRupiah(detailActiveVariant.price)}
-                      <span className="detail-price-size"> / pack ({detailActiveVariant.size})</span>
-                    </div>
+                {/* HARGA MULTI-SATUAN UTAMA & DROPDOWN DUA TIPE SATUAN */}
+                {detailActiveVariant && (() => {
+                  let activePrice = detailActiveVariant.price;
+                  let activeUnitLabel = ' / pack';
 
-                    {(detailActiveVariant.priceRoll || detailActiveVariant.priceDus || detailActiveVariant.pricePcs) && (
-                      <div className="detail-multi-pricing-row">
-                        {detailActiveVariant.priceRoll && (
-                          <div className="multi-price-badge">
-                            <span className="mp-unit">Harga Roll:</span>
-                            <span className="mp-val">Rp {formatRupiah(detailActiveVariant.priceRoll)}</span>
+                  if (selectedWholesaleUnit === 'dus' && detailActiveVariant.priceDus) {
+                    activePrice = detailActiveVariant.priceDus;
+                    activeUnitLabel = ' / dus';
+                  } else if (selectedWholesaleUnit === 'bal' && (detailActiveVariant.priceBal || detailActiveVariant.priceDus)) {
+                    activePrice = detailActiveVariant.priceBal || detailActiveVariant.priceDus;
+                    activeUnitLabel = ' / bal';
+                  } else if (selectedPackUnit === 'roll' && detailActiveVariant.priceRoll) {
+                    activePrice = detailActiveVariant.priceRoll;
+                    activeUnitLabel = ' / roll';
+                  }
+
+                  return (
+                    <div className="detail-price-box">
+                      <span className="detail-price-label">
+                        {detailActiveVariant.inStock ? 'Harga & Opsi Satuan Pembelian' : 'Stok Sedang Kosong'}
+                      </span>
+
+                      {/* DISPLAY HARGA UTAMA SESUAI DROPDOWN DIPILIH */}
+                      <div className="detail-price-value">
+                        <span className="detail-price-rp">Rp</span>
+                        {formatRupiah(activePrice)}
+                        <span className="detail-price-size">
+                          {activeUnitLabel} ({detailActiveVariant.size})
+                        </span>
+                      </div>
+
+                      {/* DUA TIPE DROPDOWN UNTUK HARGA ECERAN & GROSIR */}
+                      <div className="detail-price-dropdowns-wrapper" style={{ marginTop: '0.85rem', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                        
+                        {/* DROPDOWN 1: HARGA ECERAN KEMASAN (PACK VS ROLL) */}
+                        <div className="price-dropdown-group">
+                          <label style={{ fontSize: '0.78rem', fontWeight: 800, color: '#475569', display: 'block', marginBottom: '0.25rem' }}>
+                            📦 Pilih Tipe Satuan Kemasan (Pack / Roll):
+                          </label>
+                          <select
+                            value={selectedPackUnit}
+                            onChange={(e) => {
+                              setSelectedPackUnit(e.target.value);
+                              setSelectedWholesaleUnit('none');
+                            }}
+                            className="detail-unit-select"
+                            style={{
+                              width: '100%',
+                              padding: '0.55rem 0.75rem',
+                              borderRadius: '10px',
+                              border: '1.5px solid #cbd5e1',
+                              backgroundColor: '#ffffff',
+                              fontSize: '0.84rem',
+                              fontWeight: 700,
+                              color: '#0f172a',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <option value="pack">Per Pack — Rp {formatRupiah(detailActiveVariant.price)} / pack</option>
+                            {detailActiveVariant.priceRoll && (
+                              <option value="roll">Per Roll — Rp {formatRupiah(detailActiveVariant.priceRoll)} / roll</option>
+                            )}
+                          </select>
+                        </div>
+
+                        {/* DROPDOWN 2: HARGA GROSIR BESAR (PER DUS VS PER BAL) */}
+                        {(detailActiveVariant.priceDus || detailActiveVariant.priceBal) && (
+                          <div className="price-dropdown-group">
+                            <label style={{ fontSize: '0.78rem', fontWeight: 800, color: '#475569', display: 'block', marginBottom: '0.25rem' }}>
+                              🏭 Pilih Satuan Grosir Besar (Per Dus / Per Bal):
+                            </label>
+                            <select
+                              value={selectedWholesaleUnit}
+                              onChange={(e) => setSelectedWholesaleUnit(e.target.value)}
+                              className="detail-unit-select"
+                              style={{
+                                width: '100%',
+                                padding: '0.55rem 0.75rem',
+                                borderRadius: '10px',
+                                border: '1.5px solid #cbd5e1',
+                                backgroundColor: '#ffffff',
+                                fontSize: '0.84rem',
+                                fontWeight: 700,
+                                color: '#0f172a',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <option value="none">-- Tanpa Satuan Grosir --</option>
+                              {detailActiveVariant.priceDus && (
+                                <option value="dus">Per Dus — Rp {formatRupiah(detailActiveVariant.priceDus)} / dus</option>
+                              )}
+                              {(detailActiveVariant.priceBal || (detailActiveVariant.priceDus && !detailActiveVariant.priceBal)) && (
+                                <option value="bal">Per Bal — Rp {formatRupiah(detailActiveVariant.priceBal || detailActiveVariant.priceDus)} / bal</option>
+                              )}
+                            </select>
                           </div>
                         )}
-                        {detailActiveVariant.priceDus && (
-                          <div className="multi-price-badge">
-                            <span className="mp-unit">Harga Dus / Bal:</span>
-                            <span className="mp-val">Rp {formatRupiah(detailActiveVariant.priceDus)}</span>
-                          </div>
-                        )}
+
+                        {/* HARGA PCS (TAMPIL BIASA DI BAWAH BILA ADA) */}
                         {detailActiveVariant.pricePcs && (
-                          <div className="multi-price-badge">
-                            <span className="mp-unit">Harga per Pcs:</span>
-                            <span className="mp-val">Rp {formatRupiah(detailActiveVariant.pricePcs)}</span>
+                          <div className="detail-pcs-price-tag" style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0284c7', background: '#e0f2fe', padding: '0.4rem 0.75rem', borderRadius: '8px', border: '1px solid #bae6fd' }}>
+                            💡 Informasi Harga per Pcs: <strong>Rp {formatRupiah(detailActiveVariant.pricePcs)} / pcs</strong>
                           </div>
                         )}
                       </div>
-                    )}
-                  </div>
-                )}
-
-
+                    </div>
+                  );
+                })()}
 
                 {/* DESKRIPSI & SPESIFIKASI DENGAN DUKUNGAN PARAGRAF & ENTER */}
                 <div className="detail-description-container">
@@ -544,7 +678,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
 
                 {/* TOMBOL ORDER WA */}
                 <a
-                  href={buildWhatsAppUrl(detailProduct, detailActiveVariant)}
+                  href={buildWhatsAppUrl(detailProduct, detailActiveVariant, selectedPackUnit, selectedWholesaleUnit)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`detail-wa-btn ${detailActiveVariant && !detailActiveVariant.inStock ? 'disabled-detail-wa' : ''}`}
@@ -823,6 +957,41 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
           {/* 4. PRODUCT GRID & SUBCATEGORY FILTER */}
           <section className="catalog-products-section" id="catalog-products">
 
+            {/* TOMBOL KEMBALI JIKA FILTER KATEGORI / PENCARIAN AKTIF */}
+            {(activeCategory !== 'Semua' || (searchQuery && searchQuery.trim() !== '')) && (
+              <div className="category-back-btn-bar" style={{ marginBottom: '1.15rem' }}>
+                <button
+                  type="button"
+                  className="btn-back-to-home"
+                  onClick={() => {
+                    setActiveCategory('Semua');
+                    if (onResetSearch) onResetSearch();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.6rem 1.2rem',
+                    borderRadius: '10px',
+                    border: '1.5px solid #d5b58c',
+                    backgroundColor: '#ffffff',
+                    color: '#0f172a',
+                    fontWeight: 700,
+                    fontSize: '0.88rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 3px 8px rgba(0,0,0,0.06)',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                  </svg>
+                  <span>Kembali ke Halaman Utama</span>
+                </button>
+              </div>
+            )}
+
             <div className="section-title-wrap">
               <h2 className="section-title">
                 {activeCategory === 'Semua' ? 'Preview Produk Utama Per Kategori' : `Daftar Produk ${activeCategory}`}
@@ -843,7 +1012,7 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                 : { size: 'Standar', price: 0, inStock: true };
 
               const photoCount = (product.imageUrl ? 1 : 0) + (product.extraImages ? product.extraImages.length : 0);
-              const displayImage = activeVariant.imageUrl || product.imageUrl;
+              const displayImage = product.imageUrl || activeVariant.imageUrl;
 
               return (
                 <div key={product.id} className="product-card">
