@@ -52,7 +52,7 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
     return new Intl.NumberFormat('id-ID').format(val);
   };
 
-  // Helper: Bypass CORS/hotlink block untuk gambar Instagram & media sosial
+  // Helper: Bypass CORS/hotlink block untuk gambar Instagram & media sosial (Mencegah 403 Error)
   const resolveImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('data:image')) return url;
@@ -209,10 +209,9 @@ function CatalogView({ products, categories = [], activeCategory, setActiveCateg
 
     return (
       <div className="placeholder-image-rich" style={{ background: gradientBg }}>
-        <span className="placeholder-cat-badge" style={{ color: iconColor }}>{categoryBadgeText}</span>
         <div className="placeholder-icon-wrap" style={{ color: iconColor }}>{iconSvg}</div>
         <div className="placeholder-text-title">{name}</div>
-        <span className="placeholder-sub-note">Food Grade Premium</span>
+        <span className="placeholder-sub-note">ALISAN PLASTIK • FOOD GRADE</span>
       </div>
     );
   };
@@ -1005,14 +1004,17 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
 
             <div className="product-grid">
               {displayedProducts.length > 0 ? (
-                displayedProducts.map((product) => {
+                displayedProducts.map((product, idx) => {
               const activeVariantIdx = selectedVariantMap[product.id] !== undefined ? selectedVariantMap[product.id] : 0;
               const activeVariant = product.variants?.length > 0
                 ? (product.variants[activeVariantIdx] || product.variants[0])
                 : { size: 'Standar', price: 0, inStock: true };
 
               const photoCount = (product.imageUrl ? 1 : 0) + (product.extraImages ? product.extraImages.length : 0);
-              const displayImage = product.imageUrl || activeVariant.imageUrl;
+              const rawImage = product.imageUrl || 
+                               (activeVariant && activeVariant.imageUrl) || 
+                               (product.extraImages && product.extraImages[0]);
+              const hasUploadedPhoto = Boolean(rawImage && rawImage.trim() !== '');
 
               return (
                 <div key={product.id} className="product-card">
@@ -1036,16 +1038,29 @@ Mohon informasi ketersediaan stok & total pembayaran ya min. Terima kasih! 🙏`
                       </span>
                     )}
 
-                    {displayImage ? (
+                    {hasUploadedPhoto && (
                       <img
-                        src={resolveImageUrl(displayImage)}
+                        src={resolveImageUrl(rawImage)}
                         alt={product.name}
                         className="product-image"
-                        onError={(e) => { e.target.style.display = 'none'; }}
+                        loading="eager"
+                        decoding="async"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          const fallback = e.target.parentElement.querySelector('.placeholder-image-rich');
+                          if (fallback) fallback.style.display = 'flex';
+                        }}
                       />
-                    ) : (
-                      renderFallbackImage(product.category, product.name)
                     )}
+
+                    <div 
+                      className="placeholder-image-rich" 
+                      style={{ 
+                        display: hasUploadedPhoto ? 'none' : 'flex' 
+                      }}
+                    >
+                      {renderFallbackImage(product.category, product.name)}
+                    </div>
                   </div>
 
                   <div className="product-info">

@@ -61,10 +61,14 @@ function App() {
   // State untuk mengontrol buka/tutup Modal PIN
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
-  // 1. Fetch Data dari Supabase Database saat aplikasi dibuka (Optimized Instant Render)
+  // 1. Fetch Data dari Supabase Database dengan Hard Timeout Maksimal 4 Detik (No Delay)
   useEffect(() => {
-    const loadSupabaseData = async () => {
-      try {
+    const loadSupabaseDataWithTimeout = async () => {
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Supabase network timeout (4s limit reached)')), 4000)
+      );
+
+      const fetchDataPromise = (async () => {
         // Fetch Categories
         const { data: catData, error: catErr } = await supabase
           .from('categories')
@@ -111,12 +115,16 @@ function App() {
           }
         }
         console.log('✓ Database Supabase Synchronized!');
+      })();
+
+      try {
+        await Promise.race([fetchDataPromise, timeoutPromise]);
       } catch (err) {
-        console.warn('Mode offline/Gagal fetch Supabase, menggunakan data browser:', err);
+        console.warn('⚡ Timeout 4s tercapai! Menggunakan data cache lokal tercepat:', err.message);
       }
     };
 
-    loadSupabaseData();
+    loadSupabaseDataWithTimeout();
   }, []);
 
   // 2. Real-Time Subscription Supabase (Meng-update layar secara instant jika ada perubahan dari HP/device lain)
