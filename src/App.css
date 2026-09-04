@@ -2189,6 +2189,13 @@ body {
   background-color: var(--accent-brown-hover);
 }
 
+.btn-submit-pin:disabled,
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(40%);
+}
+
 /* KELOLA KATEGORI TAB STYLING */
 .add-category-form-row {
   display: flex;
